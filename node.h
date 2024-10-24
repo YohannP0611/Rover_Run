@@ -14,8 +14,10 @@ typedef struct s_node
     struct s_node **sons;
     int nbSons; // taille physique du tableau
     h_std_list avails; // Liste des mouvements restants
-} t_node;
+} t_node, *p_node;
 
 t_node *createNode(int value, int nb_sons, int depth);
+
+void deleteNode(p_node);
 
 #endif //UNTITLED1_NODE_H

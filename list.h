@@ -15,6 +15,8 @@ typedef struct s_std_list
 
 void displayHList(h_std_list);
 
-void addTailList(h_std_list* list, int val);
+void addTailList(h_std_list* list, t_move move);
+
+void Deleteelt(h_std_list*, t_move);
 
 #endif //UNTITLED1_LIST_H

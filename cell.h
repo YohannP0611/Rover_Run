@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "moves.h"
+
 #ifndef UNTITLED1_CELL_H
 #define UNTITLED1_CELL_H
 
@@ -9,7 +11,7 @@
 struct s_cell
 {
     struct s_cell *prec;
-    int value;
+    t_move move;
     struct s_cell *next;
 };
 typedef struct s_cell t_cell, *p_cell;
@@ -26,6 +28,8 @@ void displayCell(t_cell);
  * @param int value
  * @return pointer to cell, whit a value, and next is NULL
  */
-p_cell createCell(int);
+p_cell createCell(t_move);
+
+void deleteCell(p_cell);
 
 #endif //UNTITLED1_CELL_H

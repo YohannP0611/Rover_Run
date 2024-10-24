@@ -16,3 +16,13 @@ t_node *createNode(int value, int nb_sons, int depth) {
     }
     return node;
 }
+
+void deleteNode(p_node node) {
+    if(node->nbSons == 0) {
+        free(node->sons);
+        free(node);
+    }
+    else {
+        deleteNode(node->sons[node->nbSons - 1]);
+    }
+}

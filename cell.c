@@ -10,7 +10,7 @@
  * @return : void
  */
 void displayCell(t_cell cell) {
-    printf("%d\n", cell.value);
+    printf("%d\n", cell.move);
 }
 
 /***
@@ -18,8 +18,14 @@ void displayCell(t_cell cell) {
  * @param int value
  * @return pointer to cell, whit a value, and next is NULL
  */
-p_cell createCell(int value) {
+p_cell createCell(t_move move) {
     p_cell cell = (t_cell*) malloc(sizeof (p_cell));
-    cell->value = value;
+    cell->move = move;
+    cell->next = NULL;
+    cell->prec = NULL;
     return cell;
+}
+
+void deleteCell(p_cell cell) {
+    free(cell);
 }

@@ -19,4 +19,6 @@ add_executable(untitled1 main.c
         cell.c
         list.h
         list.c
-        node.c)
+        node.c
+        tree.h
+        tree.c)
