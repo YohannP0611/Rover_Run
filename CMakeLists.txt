@@ -13,4 +13,10 @@ add_executable(untitled1 main.c
         queue.c
         queue.h
         stack.c
-        stack.h)
+        stack.h
+        node.h
+        cell.h
+        cell.c
+        list.h
+        list.c
+        node.c)
