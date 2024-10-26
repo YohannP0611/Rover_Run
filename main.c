@@ -25,7 +25,19 @@ int main() {
     displayMap(map);
 
     t_tree tree = createEmptyTree();
-    addNode();
+    p_node node = createNode(U_TURN, 3, 0);
+    addNode(&tree, node, U_TURN);
+    printNode(*tree.root);
+
+    addNode(&tree, node, F_10);
+    addNode(&tree, node, F_20);
+
+    printNode(*tree.root->sons[0]);
+    printNode(*tree.root->sons[1]);
+
+    addNode(&tree, node->sons[0], F_30);
+    printNode(*tree.root->sons[0]->sons[0]);
+
 
     return 0;
 }

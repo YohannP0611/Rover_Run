@@ -4,6 +4,8 @@
 
 #include "tree.h"
 
+#include <time.h>
+
 t_tree createEmptyTree() {
     t_tree tree;
     tree.root = NULL;
@@ -17,30 +19,65 @@ void deleteTree(p_tree tree) {
     }
 }
 
-void addNode(p_tree tree, p_move parent_node_path, int parent_depth, t_move move, int nb_sons) {
+void addNode(p_tree tree, p_node node, t_move move) {
 
-    p_node new_node = createNode(move, nb_sons, parent_depth++);
-    p_node tmp = findNode(parent_node_path, *tree, parent_depth);
-    int j = 0;
-    while (j < tmp->nbSons) {
-        if (tmp->sons[j] == NULL) {
-            tmp->sons[j] = new_node;
+    if (tree->root == NULL) {
+        tree->root = node;
+        node->path = (p_move) malloc(sizeof(t_move));
+        node->path[0] = node->move;
+    }
+    else {
+
+        p_node new_node = createNode(move, node->nbSons, node->depth + 1);
+        p_node tmp = findNode(*tree, node->path, node->depth);
+        printf("bonjour");
+
+        int j = 0;
+        while (j < tmp->nbSons ) {
+            if (tmp->sons[j] == NULL) {
+                tmp->sons[j] = new_node;
+
+                for (int k = 0; k < tmp->depth + 1; k++) {
+                    new_node->path[k] = tmp->path[k];
+                }
+                new_node->path[tmp->depth + 1] = new_node->move;
+                printNode(*new_node);
+                return;
+            }
+            j++;
         }
-        j++;
     }
 }
 
-p_node findNode(p_move path, t_tree tree, int depth) {
+
+
+p_node findNode( t_tree tree, p_move path, int depth) {
+
     p_node tmp = tree.root;
 
-    while(tmp->depth != depth) {
-        int i = 0;
-        while (i < tmp->nbSons) {
-            if (tmp->move == tmp->sons[i]->move) {
-                tmp = tmp->sons[i];
+    if (tmp->sons == NULL) {
+        return tmp;
+    }
+
+    int j = 0;
+    while(j < depth) {
+
+            int i = 0;
+
+            while (i < tmp->nbSons) {
+
+                if (tmp->sons[i] != NULL) {
+
+                    if (tmp->path[j] == tmp->sons[i]->move) {
+                        printf("r");
+                        tmp = tmp->sons[i];
+
+                    }
+                }
+
+                i++;
             }
-            i++;
-        }
+            j++;
     }
     return tmp;
 }

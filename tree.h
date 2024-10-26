@@ -19,8 +19,8 @@ t_tree createEmptyTree();
 
 void deleteTree(p_tree);
 
-void addNode(p_tree, p_move, int, t_move, int); // Ajouter un noeud à l'arbre en donnant le chemin d'accès à ce noeud
+void addNode(p_tree tree, p_node node, t_move move); // Ajouter un noeud à l'arbre en donnant l'adresse du noeud parent
 
-p_node findNode(p_move path, t_tree tree, int depth);
+p_node findNode(t_tree tree, p_move path, int depth);
 
 #endif //UNTITLED1_TREE_H
