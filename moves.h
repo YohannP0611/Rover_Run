@@ -25,7 +25,7 @@ typedef enum e_move
     T_LEFT, // Turn left (+90°)
     T_RIGHT, // Turn right (-90°)
     U_TURN
-} t_move;
+} t_move, *p_move;
 
 /**
  * @brief function to get a t_move as a string
