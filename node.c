@@ -30,15 +30,28 @@ void deleteNode(p_node node) {
 
 void printNode(t_node node) {
 
-    printf("[%d] / depth : %d | nbSons: %d \\\n", node.move, node.depth, node.nbSons);
-    printf("[");
-    int i = 0;
-    while (i != node.depth) {
-
-        printf(" %d -", node.path[i]);
-        i++;
+    if(node.depth == 0) {
+        printf("[root@]\n");
+        printf("|\nv\n");
+        printf("[%d]\n", node.move);
+        printf("\n");
+    } else {
+        printPath(node.path, node.depth);
+        printf("\n|\nv\n");
+        printf("[%d]\n", node.move);
     }
 
-    printf(" %d]\n", node.path[node.depth]);
-
 }
+
+void printPath(p_move path, int depth) {
+printf("[{");
+int i = 0;
+while (i != depth) {
+
+printf("%d-", path[i]);
+i++;
+}
+
+printf("%d}@]", path[depth]);
+}
+

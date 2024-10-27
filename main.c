@@ -25,21 +25,23 @@ int main() {
     displayMap(map);
 
     t_tree tree = createEmptyTree();
-    p_node node = createNode(U_TURN, 3, 0);
+    p_node node = createNode(U_TURN, 2, 0);
     addNode(&tree, node, U_TURN);
-    printNode(*tree.root);
 
     addNode(&tree, node, F_10);
     addNode(&tree, node, F_20);
 
-    printNode(*tree.root->sons[0]);
-    printNode(*tree.root->sons[1]);
 
     addNode(&tree, node->sons[0], F_30);
-    printNode(*tree.root->sons[0]->sons[0]);
-    addNode(&tree, node->sons[1], B_10);
-    printNode(*tree.root->sons[1]->sons[0]);
 
+    addNode(&tree, node->sons[1], B_10);
+
+    addNode(&tree, node->sons[1], T_LEFT);
+
+    printNodeSon(*node->sons[1], 0);
+
+    printf("\n\n\n");
+    afficher_arbre(tree);
 
     return 0;
 }

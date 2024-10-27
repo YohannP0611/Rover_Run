@@ -23,4 +23,7 @@ void printNode(t_node);
 
 void deleteNode(p_node);
 
+void printPath(p_move path, int depth);
+
+
 #endif //UNTITLED1_NODE_H
