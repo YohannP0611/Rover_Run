@@ -10,7 +10,7 @@ t_node *createNode(t_move move, int nb_sons, int depth) {
     node->nbSons = nb_sons;
     node->depth = depth;
     node->sons = (t_node **)malloc(nb_sons*sizeof(t_node *));
-    node->path = (t_move *)malloc(nb_sons*sizeof(t_move));;
+    node->path = (t_move *)malloc((depth+1)*sizeof(t_move));;
     for (int i=0; i <nb_sons; i++)
     {
         node->sons[i]=NULL;

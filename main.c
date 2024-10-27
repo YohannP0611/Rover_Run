@@ -37,6 +37,8 @@ int main() {
 
     addNode(&tree, node->sons[0], F_30);
     printNode(*tree.root->sons[0]->sons[0]);
+    addNode(&tree, node->sons[1], B_10);
+    printNode(*tree.root->sons[1]->sons[0]);
 
 
     return 0;

@@ -29,18 +29,17 @@ void addNode(p_tree tree, p_node node, t_move move) {
     else {
 
         p_node new_node = createNode(move, node->nbSons, node->depth + 1);
-        p_node tmp = findNode(*tree, node->path, node->depth);
         printf("bonjour");
 
         int j = 0;
-        while (j < tmp->nbSons ) {
-            if (tmp->sons[j] == NULL) {
-                tmp->sons[j] = new_node;
+        while (j < node->nbSons ) {
+            if (node->sons[j] == NULL) {
+                node->sons[j] = new_node;
 
-                for (int k = 0; k < tmp->depth + 1; k++) {
-                    new_node->path[k] = tmp->path[k];
+                for (int k = 0; k < node->depth + 1; k++) {
+                    new_node->path[k] = node->path[k];
                 }
-                new_node->path[tmp->depth + 1] = new_node->move;
+                new_node->path[node->depth + 1] = new_node->move;
                 printNode(*new_node);
                 return;
             }
