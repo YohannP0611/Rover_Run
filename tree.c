@@ -98,13 +98,13 @@ void afficher_arbre_recursive(p_node noeud, int niveau, p_move chemin, int tree_
     }
 
     // Affiche le chemin et la valeur du noeud
-    printNode(*noeud);
+    printNode(*noeud, 20);
 
     // Parcours récursif , des fils
     for (int i = 0; i < noeud->nbSons; i++) {
 
         // Affichage des branches [L@] pour le premier fils et [RQ] pour les suivants
-        printNodeSon(*noeud, tree_depth);
+        printNodeSon(*noeud);
 
 
         printf("\n\n\n");
@@ -124,37 +124,35 @@ void afficher_arbre(t_tree tree) {
     afficher_arbre_recursive(tree.root, 0, tree.root->path, tree.depth);
 }
 
-void printNodeSon(t_node node, int depth) {
+void printNodeSon(t_node node) {
 
+    printNode(node, ((node.nbSons * 5 + 7 * (node.nbSons - 1)) / 2) - 1);
     for (int i = 0; i < node.nbSons; i++) {
-        if (node.sons[i] != NULL) {
-            printPath(node.sons[i]->path, node.sons[i]->depth);
-            printf("\t\t\t");
-        }
-        else {
-            printf("[N@]");
-            printf("\t\t\t\t");
-        }
+            printf("[N%d@]", i+1);
+            //printPath(node.sons[i]->path, node.sons[i]->depth);
+            if (i<node.nbSons-1) {
+                printf("-------");
+            }
 
     }
     printf("\n");
     for (int i = 0; i < node.nbSons; i++) {
-        printf("|");
-        printf("\t\t\t\t");
+        printf("   |");
+        printf("        ");
     }
     printf("\n");
     for (int i = 0; i < node.nbSons; i++) {
-        printf("v");
-        printf("\t\t\t\t");
+        printf("   v");
+        printf("        ");
     }
     printf("\n");
     for (int i = 0; i < node.nbSons; i++) {
         if (node.sons[i] != NULL) {
-            printf("[%d]", node.sons[i]->move);
+            printf("  [%d]", node.sons[i]->move);
         } else {
-            printf("NULL");
+            printf(" NULL");
         }
-        printf("\t\t\t\t");
+        printf("       ");
     }
     printf("\n");
 }

@@ -28,16 +28,29 @@ void deleteNode(p_node node) {
     }
 }
 
-void printNode(t_node node) {
+void printNode(t_node node, int indent) {
 
     if(node.depth == 0) {
+        print_indent(indent);
         printf("[root@]\n");
-        printf("|\nv\n");
+        print_indent(indent);
+        printf("|\n");
+        print_indent(indent);
+        printf("v\n");
+        print_indent(indent);
         printf("[%d]\n", node.move);
-        printf("\n");
     } else {
+        print_indent(indent);
         printPath(node.path, node.depth);
-        printf("\n|\nv\n");
+        printf("\n");
+        print_indent(indent);
+        printf("|");
+        print_indent(indent);
+        printf("\n");
+        print_indent(indent);
+        printf("v");
+        printf("\n");
+        print_indent(indent);
         printf("[%d]\n", node.move);
     }
 
@@ -55,3 +68,8 @@ i++;
 printf("%d}@]", path[depth]);
 }
 
+void print_indent(int nb) {
+    for(int i = 0; i<nb; i++) {
+        printf(" ");
+    }
+}

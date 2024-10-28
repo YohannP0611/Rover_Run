@@ -28,7 +28,7 @@ void afficher_arbre(t_tree tree);
 
 void afficher_arbre_recursive(p_node noeud, int niveau, p_move chemin, int tree_depth);
 
-void printNodeSon(t_node node, int depth);
+void printNodeSon(t_node node);
 
 
 

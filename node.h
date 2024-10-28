@@ -19,11 +19,13 @@ typedef struct s_node
 
 t_node *createNode(t_move move, int nb_sons, int depth);
 
-void printNode(t_node);
+void printNode(t_node, int);
 
 void deleteNode(p_node);
 
 void printPath(p_move path, int depth);
+
+void print_indent(int nb);
 
 
 #endif //UNTITLED1_NODE_H

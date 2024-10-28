@@ -24,6 +24,8 @@ int main() {
     }
     displayMap(map);
 
+    printf("\n\n\n");
+
     t_tree tree = createEmptyTree();
     p_node node = createNode(U_TURN, 2, 0);
     addNode(&tree, node, U_TURN);
@@ -38,10 +40,12 @@ int main() {
 
     addNode(&tree, node->sons[1], T_LEFT);
 
-    printNodeSon(*node->sons[1], 0);
+    printNodeSon(*node);
+    printf("\n\n\n");
+    printNodeSon(*node->sons[1]);
 
     printf("\n\n\n");
-    afficher_arbre(tree);
+
 
     return 0;
 }
