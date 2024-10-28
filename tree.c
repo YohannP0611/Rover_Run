@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "tree.h"
+#include "list.h"
 
 #include <time.h>
 
@@ -29,7 +30,7 @@ void addNode(p_tree tree, p_node node, t_move move) {
     }
     else {
 
-        p_node new_node = createNode(move, node->nbSons, node->depth + 1);
+        p_node new_node = createNode(move, node->nbSons-1, node->depth + 1);
 
         int j = 0;
         while (j < node->nbSons ) {
@@ -155,4 +156,97 @@ void printNodeSon(t_node node) {
         printf("       ");
     }
     printf("\n");
+}
+
+void printTreeDepthNode(t_tree tree, int depth) {
+    t_node node = *tree.root;
+    print_indent((5 * puissance(node.nbSons, tree.depth - depth) + 7 * (puissance(node.nbSons, tree.depth - depth) - 1)) / 2);
+
+    for (int i = 0; i < node.nbSons; i++) {
+        printf("[N%d@]", i+1);
+        //printPath(node.sons[i]->path, node.sons[i]->depth);
+        if (i<node.nbSons-1) {
+            for (int j = 0; j < (5 * puissance(node.nbSons, tree.depth - depth) + 7 * (puissance(node.nbSons, tree.depth - depth) - 1)) / 2; j++) {
+                printf("-");
+            }
+            printf("-------");
+        }
+
+    }
+    printf("\n");
+    print_indent((5 * puissance(node.nbSons, tree.depth - depth) + 7 * (puissance(node.nbSons, tree.depth - depth) - 1)) / 2);
+
+    for (int i = 0; i < node.nbSons; i++) {
+        printf("   |");
+        for (int j = 0; j < (5 * puissance(node.nbSons, tree.depth - depth) + 7 * (puissance(node.nbSons, tree.depth - depth) - 1)) / 2; j++) {
+            printf(" ");
+        }
+        printf("        ");
+    }
+    printf("\n");
+    print_indent((5 * puissance(node.nbSons, tree.depth - depth) + 7 * (puissance(node.nbSons, tree.depth - depth) - 1)) / 2);
+
+    for (int i = 0; i < node.nbSons; i++) {
+        printf("   v");
+        for (int j = 0; j < (5 * puissance(node.nbSons, tree.depth - depth) + 7 * (puissance(node.nbSons, tree.depth - depth) - 1)) / 2; j++) {
+            printf(" ");
+        }
+        printf("        ");
+    }
+    printf("\n");
+    print_indent((5 * puissance(node.nbSons, tree.depth - depth) + 7 * (puissance(node.nbSons, tree.depth - depth) - 1)) / 2);
+
+    for (int i = 0; i < node.nbSons; i++) {
+        if (node.sons[i] != NULL) {
+            printf("  [%d]", node.sons[i]->move);
+        } else {
+            printf(" NULL");
+        }
+        for (int j = 0; j < (5 * puissance(node.nbSons, tree.depth - depth) + 7 * (puissance(node.nbSons, tree.depth - depth) - 1)) / 2; j++) {
+            printf(" ");
+        }
+        printf("       ");
+    }
+    printf("\n");
+    if (depth < tree.depth) {
+        printTreeDepthNode(tree, depth+1);
+    }
+}
+
+int puissance(int x, int y)
+{
+    // Déclaration des variables
+    int compteur, resultat;
+
+    compteur = 0;
+    resultat = 1;
+
+    while (compteur <= y){
+        resultat = resultat * x;
+        compteur ++;
+    }
+
+    return resultat;
+}
+
+void buildTreeMove(p_move movelist, int nbMove) {
+    t_tree tree = createEmptyTree();
+
+    addNode(&tree, createNode(U_TURN, nbMove, 0), U_TURN);
+
+    for (int i = 0; i < nbMove; i++) {
+        for (int j = 0; j < nbMove; j++) {
+
+        }
+    }
+
+}
+
+void buildTreeMoveRec(p_tree tree, p_node node) {
+
+        for (int j = 0; j < node->nbSons; j++) {
+            addNode(tree, createNode(U_TURN, node->nbSons-1, 0), U_TURN);
+        }
+
+
 }

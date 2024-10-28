@@ -30,6 +30,10 @@ void afficher_arbre_recursive(p_node noeud, int niveau, p_move chemin, int tree_
 
 void printNodeSon(t_node node);
 
+void printTreeDepthNode(t_tree tree, int depth);
+
+int puissance(int x, int y);
+
 
 
 #endif //UNTITLED1_TREE_H

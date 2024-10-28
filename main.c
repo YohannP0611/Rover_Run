@@ -39,9 +39,12 @@ int main() {
     addNode(&tree, node->sons[1], B_10);
 
     addNode(&tree, node->sons[1], T_LEFT);
+    addNode(&tree, node->sons[1], T_LEFT);
+
 
     printNodeSon(*node);
     printf("\n\n\n");
+
     printNodeSon(*node->sons[1]);
 
     printf("\n\n\n");

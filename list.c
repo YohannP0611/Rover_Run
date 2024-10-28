@@ -47,3 +47,27 @@ void Deleteelt(h_std_list* list, t_move move) {
         free(tmp);
     }
 }
+
+h_std_list* removeElt(h_std_list* list, t_move move) {
+    h_std_list* list2 = createListEmpty();
+    if (list->head == NULL) {
+        printf("Liste vide\n");
+        return NULL;
+    }
+    else {
+        p_cell tmp = list->head;
+        while(tmp != NULL) {
+            if (tmp->move != move) {
+                addTailList(list2, tmp->move);
+            }
+            tmp = tmp->next;
+        }
+    }
+    return list2;
+}
+
+h_std_list* createListEmpty(){
+    h_std_list* list = (h_std_list*)malloc(sizeof (h_std_list));
+    list->head = NULL;
+    return list;
+}

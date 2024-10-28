@@ -19,4 +19,8 @@ void addTailList(h_std_list* list, t_move move);
 
 void Deleteelt(h_std_list*, t_move);
 
+h_std_list* createListEmpty();
+
+h_std_list* removeElt(h_std_list* list, t_move move);
+
 #endif //UNTITLED1_LIST_H
