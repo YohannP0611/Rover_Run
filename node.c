@@ -29,7 +29,6 @@ void deleteNode(p_node node) {
 }
 
 void printNode(t_node node, int indent) {
-
     if(node.depth == 0) {
         print_indent(indent);
         printf("[root@]\n");
@@ -40,18 +39,20 @@ void printNode(t_node node, int indent) {
         print_indent(indent);
         printf("[%d]\n", node.move);
     } else {
-        print_indent(indent);
-        printPath(node.path, node.depth);
-        printf("\n");
-        print_indent(indent);
-        printf("|");
-        print_indent(indent);
-        printf("\n");
-        print_indent(indent);
-        printf("v");
-        printf("\n");
-        print_indent(indent);
-        printf("[%d]\n", node.move);
+
+            print_indent(indent);
+            printPath(node.path, node.depth);
+            printf("\n");
+            print_indent(indent);
+            printf("|");
+            print_indent(indent);
+            printf("\n");
+            print_indent(indent);
+            printf("v");
+            printf("\n");
+            print_indent(indent);
+            printf("[%d]\n", node.move);
+
     }
 
 }

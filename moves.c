@@ -3,6 +3,9 @@
 //
 
 #include "moves.h"
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 /* prototypes of local functions */
 /* local functions are used only in this file, as helper functions */
@@ -152,4 +155,29 @@ void updateLocalisation(t_localisation *p_loc, t_move m)
 {
     *p_loc = move(*p_loc, m);
     return;
+}
+
+// Fonction pour sélectionner un élément en fonction des pourcentages
+int selectRandomMove(tabMove move[], int size) {
+
+    double sum = 0.0;
+    for (int i = 0; i < size; i++) {
+        sum += move[i].percentage;
+    }
+
+    // Générer un nombre aléatoire entre 0 et la somme des pourcentages
+    double random = (double)rand() / RAND_MAX * sum;
+
+    // Sélection de l'élément
+    double cumulative = 0.0;
+    for (int i = 0; i < size; i++) {
+        cumulative += move[i].percentage;
+        if (random <= cumulative) {
+            // Réduire le pourcentage de l'élément sélectionné
+            move[i].percentage *= 0.9;  // Réduire le pourcentage par exemple de 10%
+            return move[i].element;
+        }
+    }
+
+    return -1; // Retourne -1 si aucun élément n'est sélectionné (ne devrait pas arriver)
 }

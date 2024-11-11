@@ -7,7 +7,7 @@
 void addTailList(h_std_list* list, t_move move) {
     p_cell new_cell = createCell(move);
 
-    if(list->head == NULL) {
+    if (list->head == NULL) {
         list->head = new_cell;
         return;
     }
@@ -48,14 +48,14 @@ void Deleteelt(h_std_list* list, t_move move) {
     }
 }
 
-h_std_list* removeElt(h_std_list* list, t_move move) {
+h_std_list* removeElt(h_std_list list, t_move move) {
     h_std_list* list2 = createListEmpty();
-    if (list->head == NULL) {
+    if (list.head == NULL) {
         printf("Liste vide\n");
         return NULL;
     }
     else {
-        p_cell tmp = list->head;
+        p_cell tmp = list.head;
         while(tmp != NULL) {
             if (tmp->move != move) {
                 addTailList(list2, tmp->move);

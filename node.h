@@ -19,7 +19,7 @@ typedef struct s_node
 
 t_node *createNode(t_move move, int nb_sons, int depth);
 
-void printNode(t_node, int);
+void printNode(t_node node, int indent);
 
 void deleteNode(p_node);
 

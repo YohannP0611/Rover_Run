@@ -27,6 +27,15 @@ typedef enum e_move
     U_TURN
 } t_move, *p_move;
 
+typedef struct {
+    t_move element;
+    double percentage;  // Le pourcentage de probabilité de l'élément
+} tabMove;
+
+// Fonction pour sélectionner un élément en fonction des pourcentages
+int selectRandomMove(tabMove move[], int size);
+
+
 /**
  * @brief function to get a t_move as a string
  * @param move : the move to convert

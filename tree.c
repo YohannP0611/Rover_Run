@@ -20,8 +20,9 @@ void deleteTree(p_tree tree) {
     }
 }
 
-void addNode(p_tree tree, p_node node, t_move move) {
+void addNode(p_tree tree, p_node node, t_move move, int nbSon) {
 
+    // Si l'arbre est vide ajoute le noeud comme racine
     if (tree->root == NULL) {
         tree->root = node;
         node->path = (p_move) malloc(sizeof(t_move));
@@ -30,17 +31,26 @@ void addNode(p_tree tree, p_node node, t_move move) {
     }
     else {
 
-        p_node new_node = createNode(move, node->nbSons-1, node->depth + 1);
+        // Création du nouveau noeud (enfant)
+        p_node new_node = createNode(move, node->nbSons, node->depth + 1);
 
         int j = 0;
         while (j < node->nbSons ) {
+
             if (node->sons[j] == NULL) {
                 node->sons[j] = new_node;
 
+                // Définition du chemin pour accéder au noeud à partir de la racine de l'arbre
                 for (int k = 0; k < node->depth + 1; k++) {
                     new_node->path[k] = node->path[k];
                 }
+
+                    new_node->avails = *removeElt(node->avails, move);
+
+                // Affectation du nouveau mouvement dans le chemin
                 new_node->path[node->depth + 1] = new_node->move;
+
+                // Changement de la profondeur total de l'arbre pour le cas où le nouveau noeud est le plus profond
                 if(tree->depth < new_node->depth) {
                     tree->depth = new_node->depth;
                 }
@@ -86,43 +96,7 @@ p_node findNode( t_tree tree, p_move path, int depth) {
 
 // Fonction récursive pour afficher l'arbre
 void afficher_arbre_recursive(p_node noeud, int niveau, p_move chemin, int tree_depth) {
-    if (noeud == NULL) {
-        printf("|\nv\n");
-        printf("NULL\n");
-        printf("\n");
-        return;
-    }
 
-    // Indentation pour représenter la profondeur du nœud
-    for (int i = 0; i < niveau * 5; i++) {
-
-    }
-
-    // Affiche le chemin et la valeur du noeud
-    printNode(*noeud, 20);
-
-    // Parcours récursif , des fils
-    for (int i = 0; i < noeud->nbSons; i++) {
-
-        // Affichage des branches [L@] pour le premier fils et [RQ] pour les suivants
-        printNodeSon(*noeud);
-
-
-        printf("\n\n\n");
-
-        // Appel récursif pour afficher chaque sous-arbre
-        afficher_arbre_recursive(noeud->sons[i], niveau + 1, noeud->sons[i]->path, tree_depth);
-    }
-}
-
-// Fonction principale pour afficher l'arbre depuis la racine
-void afficher_arbre(t_tree tree) {
-    if (tree.root == NULL) {
-        printf("L'arbre est vide.\n");
-        return;
-    }
-    printf("tree depth : %d\n", tree.depth);
-    afficher_arbre_recursive(tree.root, 0, tree.root->path, tree.depth);
 }
 
 void printNodeSon(t_node node) {
@@ -229,24 +203,4 @@ int puissance(int x, int y)
     return resultat;
 }
 
-void buildTreeMove(p_move movelist, int nbMove) {
-    t_tree tree = createEmptyTree();
 
-    addNode(&tree, createNode(U_TURN, nbMove, 0), U_TURN);
-
-    for (int i = 0; i < nbMove; i++) {
-        for (int j = 0; j < nbMove; j++) {
-
-        }
-    }
-
-}
-
-void buildTreeMoveRec(p_tree tree, p_node node) {
-
-        for (int j = 0; j < node->nbSons; j++) {
-            addNode(tree, createNode(U_TURN, node->nbSons-1, 0), U_TURN);
-        }
-
-
-}
