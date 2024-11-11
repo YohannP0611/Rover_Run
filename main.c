@@ -31,6 +31,7 @@ int main() {
 
     srand(time(NULL));
 
+
     // Exemple de tableau d'éléments avec leurs pourcentages initiaux
     tabMove items[] = {
             {F_10, 30.0},
