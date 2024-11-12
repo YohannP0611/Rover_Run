@@ -22,7 +22,7 @@ void deleteTree(p_tree);
 
 void addRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails);
 
-void addNode(p_tree tree, p_node node, t_move move, int nbSon); // Ajouter un noeud à l'arbre en donnant l'adresse du noeud parent
+void addNode(p_tree tree, p_node node, t_move move); // Ajouter un noeud à l'arbre en donnant l'adresse du noeud parent
 
 p_node findNode(t_tree tree, p_move path, int depth);
 
@@ -35,6 +35,11 @@ void printNodeSon(t_node node);
 void printTreeDepthNode(t_tree tree, int depth);
 
 int puissance(int x, int y);
+
+p_tree createPhaseTree(h_std_list* phase_move);
+
+// Fonction qui ajoute un noeud fils à un noeud donné pour l'arbre de phase
+void addPhaseNode(p_tree tree, p_node node);
 
 
 

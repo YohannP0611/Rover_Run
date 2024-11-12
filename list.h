@@ -23,4 +23,8 @@ h_std_list* createListEmpty();
 
 h_std_list* removeElt(h_std_list list, t_move move);
 
+int countEltHList(h_std_list list);
+
+t_move findElt(h_std_list list, int nb);
+
 #endif //UNTITLED1_LIST_H

@@ -46,7 +46,7 @@ int main() {
 
     h_std_list* move_list = createListEmpty();
 
-    // Sélectionner 10 éléments
+    // Sélectionner n éléments
     for (int i = 0; i < nbMaxMove; i++) {
         t_move selected = selectRandomMove(items, nbMove);
         addTailList(move_list, selected);
@@ -64,28 +64,28 @@ int main() {
     p_node node = tree.root;
 
 
-    addNode(&tree, node, F_10, nbMaxMove-1);
+    addNode(&tree, node, F_10);
 
     printf("\n\n");
     displayHList(*tree.root->sons[0]->avails);
 
-    addNode(&tree, node, F_20, nbMaxMove-1);
+    addNode(&tree, node, F_20);
 
     printf("\n\n");
     displayHList(*tree.root->sons[1]->avails);
 
 
-    addNode(&tree, node->sons[0], F_30, nbMaxMove-2);
+    addNode(&tree, node->sons[0], F_30);
 
     printf("\n\n");
     displayHList(*node->sons[0]->sons[0]->avails);
 
-    addNode(&tree, node->sons[1], B_10, nbMaxMove-2);
+    addNode(&tree, node->sons[1], B_10);
 
     printf("\n\n");
     displayHList(*node->sons[1]->sons[0]->avails);
 
-    addNode(&tree, node->sons[1], T_LEFT, nbMaxMove-2);
+    addNode(&tree, node->sons[1], T_LEFT);
 
     printf("\n\n");
     displayHList(*node->sons[1]->sons[1]->avails);
@@ -98,6 +98,16 @@ int main() {
 
     printf("\n\n\n");
     printNode(*node->sons[0]->sons[0], 1);
+
+    printf("\n\n\n");
+
+    p_tree phase_tree = createPhaseTree(move_list);
+
+    printf("\n\n\n");
+    printNodeSon(*phase_tree->root);
+    printf("\n\n\n");
+    printNodeSon(*phase_tree->root->sons[0]);
+    printNodeSon(*phase_tree->root->sons[0]->sons[0]);
 
 
     return 0;

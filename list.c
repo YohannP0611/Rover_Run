@@ -85,3 +85,32 @@ h_std_list* createListEmpty(){
     list->head = NULL;
     return list;
 }
+
+int countEltHList(h_std_list list) {
+
+    p_cell tmp = list.head;
+    int count = 0;
+
+    while(tmp != NULL) {
+        count++;
+        tmp = tmp->next;
+    }
+
+    return count;
+
+}
+
+t_move findElt(h_std_list list, int nb) {
+
+    p_cell tmp = list.head;
+
+    int count = 0;
+
+    while(tmp != NULL && count < nb) {
+        count++;
+        tmp = tmp->next;
+    }
+
+    return tmp->move;
+
+}

@@ -20,6 +20,7 @@ void deleteTree(p_tree tree) {
     }
 }
 
+// Ajoute une racine à un arbre vide
 void addRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails) {
     if (tree->root == NULL) {
         tree->root = createNode(move, nbSon, 0);
@@ -33,7 +34,8 @@ void addRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails) {
     }
 }
 
-void addNode(p_tree tree, p_node node, t_move move, int nbSon) {
+// Fonction qui ajoute un noeud fils à un noeud donné
+void addNode(p_tree tree, p_node node, t_move move) {
 
     // Si l'arbre est vide
     if (tree->root == NULL) {
@@ -42,7 +44,7 @@ void addNode(p_tree tree, p_node node, t_move move, int nbSon) {
     else {
 
         // Création du nouveau noeud (enfant)
-        p_node new_node = createNode(move, node->nbSons, node->depth + 1);
+        p_node new_node = createNode(move, node->nbSons - 1, node->depth + 1);
 
         int j = 0;
         while (j < node->nbSons ) {
@@ -50,14 +52,12 @@ void addNode(p_tree tree, p_node node, t_move move, int nbSon) {
             // Ajout du nouveau noeud fils
             if (node->sons[j] == NULL) {
                 node->sons[j] = new_node;
-                printf("miameofgjgs");
 
                 // Définition du chemin pour accéder au noeud à partir de la racine de l'arbre
                 for (int k = 0; k < node->depth + 1; k++) {
                     new_node->path[k] = node->path[k];
                 }
 
-                displayHList(*node->avails);
                 // Affectation des movements encore disponible
                 new_node->avails = removeElt(*node->avails, move);
 
@@ -75,7 +75,6 @@ void addNode(p_tree tree, p_node node, t_move move, int nbSon) {
         }
     }
 }
-
 
 
 p_node findNode( t_tree tree, p_move path, int depth) {
@@ -203,6 +202,7 @@ void printTreeDepthNode(t_tree tree, int depth) {
     }
 }
 
+// Fonction de calcul de puissance
 int puissance(int x, int y) {
     int compteur, resultat;
 
@@ -217,4 +217,35 @@ int puissance(int x, int y) {
     return resultat;
 }
 
+p_tree createPhaseTree(h_std_list* phase_move) {
 
+    p_tree tree = (p_tree) malloc(sizeof(t_tree));
+
+    *tree = createEmptyTree();
+
+    int nbMove = countEltHList(*phase_move);
+
+    addRoot(tree, U_TURN, nbMove, phase_move);
+
+    addPhaseNode(tree, tree->root);
+
+    return tree;
+
+}
+
+// Fonction qui ajoute un noeud fils à un noeud donné pour l'arbre de phase
+void addPhaseNode(p_tree tree, p_node node) {
+
+    if (node->nbSons == 0) {
+        return;
+    }
+    else {
+
+        for (int i = 0; i < node->nbSons; i++) {
+            addNode(tree, node, findElt(*node->avails, i));
+        }
+        for (int i = 0; i < node->nbSons; i++) {
+            addPhaseNode(tree, node->sons[i]);
+        }
+    }
+}
