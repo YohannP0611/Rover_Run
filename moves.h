@@ -33,7 +33,7 @@ typedef struct {
 } tabMove;
 
 // Fonction pour sélectionner un élément en fonction des pourcentages
-int selectRandomMove(tabMove move[], int size);
+t_move selectRandomMove(tabMove move[], int size);
 
 
 /**

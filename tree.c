@@ -20,14 +20,24 @@ void deleteTree(p_tree tree) {
     }
 }
 
+void addRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails) {
+    if (tree->root == NULL) {
+        tree->root = createNode(move, nbSon, 0);
+        tree->root->path = (p_move) malloc(sizeof(t_move));
+        tree->root->path[0] = tree->root->move;
+        tree->root->avails = avails;
+        tree->depth = 0;
+    }
+    else {
+        printf("Arbre contenant un root");
+    }
+}
+
 void addNode(p_tree tree, p_node node, t_move move, int nbSon) {
 
-    // Si l'arbre est vide ajoute le noeud comme racine
+    // Si l'arbre est vide
     if (tree->root == NULL) {
-        tree->root = node;
-        node->path = (p_move) malloc(sizeof(t_move));
-        node->path[0] = node->move;
-        tree->depth = 0;
+        printf("Arbre ne contient pas de root\n");
     }
     else {
 
@@ -37,20 +47,25 @@ void addNode(p_tree tree, p_node node, t_move move, int nbSon) {
         int j = 0;
         while (j < node->nbSons ) {
 
+            // Ajout du nouveau noeud fils
             if (node->sons[j] == NULL) {
                 node->sons[j] = new_node;
+                printf("miameofgjgs");
 
                 // Définition du chemin pour accéder au noeud à partir de la racine de l'arbre
                 for (int k = 0; k < node->depth + 1; k++) {
                     new_node->path[k] = node->path[k];
                 }
 
-                    new_node->avails = *removeElt(node->avails, move);
+                displayHList(*node->avails);
+                // Affectation des movements encore disponible
+                new_node->avails = removeElt(*node->avails, move);
+
 
                 // Affectation du nouveau mouvement dans le chemin
                 new_node->path[node->depth + 1] = new_node->move;
 
-                // Changement de la profondeur total de l'arbre pour le cas où le nouveau noeud est le plus profond
+                // Changement de la profondeur total de l'arbre dans le cas où le nouveau noeud est le plus profond
                 if(tree->depth < new_node->depth) {
                     tree->depth = new_node->depth;
                 }
@@ -130,6 +145,7 @@ void printNodeSon(t_node node) {
         printf("       ");
     }
     printf("\n");
+
 }
 
 void printTreeDepthNode(t_tree tree, int depth) {
@@ -187,9 +203,7 @@ void printTreeDepthNode(t_tree tree, int depth) {
     }
 }
 
-int puissance(int x, int y)
-{
-    // Déclaration des variables
+int puissance(int x, int y) {
     int compteur, resultat;
 
     compteur = 0;

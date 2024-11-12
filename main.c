@@ -44,30 +44,53 @@ int main() {
 
     int nbMove = 6;
 
+    h_std_list* move_list = createListEmpty();
+
     // Sélectionner 10 éléments
     for (int i = 0; i < nbMaxMove; i++) {
-        int selected = selectRandomMove(items, nbMove);
+        t_move selected = selectRandomMove(items, nbMove);
+        addTailList(move_list, selected);
         printf("Element selectionne : %d\n", selected);
     }
 
     printf("\n\n\n");
 
     t_tree tree = createEmptyTree();
-    p_node node = createNode(U_TURN, nbMaxMove, 0);
 
-    addNode(&tree, node, U_TURN, nbMaxMove);
+    addRoot(&tree, U_TURN, nbMaxMove, move_list);
+
+    displayHList(*tree.root->avails);
+
+    p_node node = tree.root;
+
 
     addNode(&tree, node, F_10, nbMaxMove-1);
+
+    printf("\n\n");
+    displayHList(*tree.root->sons[0]->avails);
+
     addNode(&tree, node, F_20, nbMaxMove-1);
+
+    printf("\n\n");
+    displayHList(*tree.root->sons[1]->avails);
 
 
     addNode(&tree, node->sons[0], F_30, nbMaxMove-2);
 
+    printf("\n\n");
+    displayHList(*node->sons[0]->sons[0]->avails);
+
     addNode(&tree, node->sons[1], B_10, nbMaxMove-2);
+
+    printf("\n\n");
+    displayHList(*node->sons[1]->sons[0]->avails);
 
     addNode(&tree, node->sons[1], T_LEFT, nbMaxMove-2);
 
+    printf("\n\n");
+    displayHList(*node->sons[1]->sons[1]->avails);
 
+    printf("\n\n");
     printNodeSon(*node);
     printf("\n\n\n");
 

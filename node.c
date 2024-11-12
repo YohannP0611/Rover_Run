@@ -38,20 +38,26 @@ void printNode(t_node node, int indent) {
         printf("v\n");
         print_indent(indent);
         printf("[%d]\n", node.move);
+        print_indent(indent);
+        displayHList(*node.avails);
+        printf("\n");
     } else {
 
-            print_indent(indent);
-            printPath(node.path, node.depth);
-            printf("\n");
-            print_indent(indent);
-            printf("|");
-            print_indent(indent);
-            printf("\n");
-            print_indent(indent);
-            printf("v");
-            printf("\n");
-            print_indent(indent);
-            printf("[%d]\n", node.move);
+        print_indent(indent);
+        printPath(node.path, node.depth);
+        printf("\n");
+        print_indent(indent);
+        printf("|");
+        print_indent(indent);
+        printf("\n");
+        print_indent(indent);
+        printf("v");
+        printf("\n");
+        print_indent(indent);
+        printf("[%d]\n", node.move);
+        print_indent(indent);
+        displayHList(*node.avails);
+        printf("\n");
 
     }
 

@@ -20,6 +20,8 @@ t_tree createEmptyTree();
 
 void deleteTree(p_tree);
 
+void addRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails);
+
 void addNode(p_tree tree, p_node node, t_move move, int nbSon); // Ajouter un noeud à l'arbre en donnant l'adresse du noeud parent
 
 p_node findNode(t_tree tree, p_move path, int depth);

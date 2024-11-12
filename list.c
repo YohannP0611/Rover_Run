@@ -5,6 +5,7 @@
 #include "list.h"
 
 void addTailList(h_std_list* list, t_move move) {
+
     p_cell new_cell = createCell(move);
 
     if (list->head == NULL) {
@@ -25,10 +26,14 @@ void addTailList(h_std_list* list, t_move move) {
 void displayHList(h_std_list list) {
 
     p_cell tmp = list.head;
-    while(tmp != NULL) {
+    printf("[");
+    while(tmp->next != NULL) {
         displayCell(*tmp);
+        printf(",");
         tmp = tmp->next;
     }
+    displayCell(*tmp);
+    printf("]");
     return;
 
 }
@@ -50,15 +55,24 @@ void Deleteelt(h_std_list* list, t_move move) {
 
 h_std_list* removeElt(h_std_list list, t_move move) {
     h_std_list* list2 = createListEmpty();
+    int remove = 0;
     if (list.head == NULL) {
         printf("Liste vide\n");
         return NULL;
     }
     else {
         p_cell tmp = list.head;
+
         while(tmp != NULL) {
+
             if (tmp->move != move) {
                 addTailList(list2, tmp->move);
+            }
+            if (remove == 1 && tmp->move == move) {
+                addTailList(list2, tmp->move);
+            }
+            if (remove != 1 && tmp->move == move) {
+                remove++;
             }
             tmp = tmp->next;
         }

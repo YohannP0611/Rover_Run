@@ -13,7 +13,7 @@ typedef struct s_node
     int depth; // profondeur du noeud (profondeur du noeud précedent+1)
     struct s_node **sons;
     int nbSons; // taille physique du tableau
-    h_std_list avails; // Liste des mouvements restants
+    h_std_list* avails; // Liste des mouvements restants
     p_move path; // chemin d'accès au noeud depuis le root
 } t_node, *p_node;
 
