@@ -30,6 +30,7 @@ void displayCell(t_cell);
  */
 p_cell createCell(t_move);
 
+// Supprime une cellule
 void deleteCell(p_cell);
 
 #endif //UNTITLED1_CELL_H

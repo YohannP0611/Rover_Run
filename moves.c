@@ -157,10 +157,13 @@ void updateLocalisation(t_localisation *p_loc, t_move m)
     return;
 }
 
+
 // Fonction pour sélectionner un élément en fonction des pourcentages
 t_move selectRandomMove(tabMove move[], int size) {
 
     double sum = 0.0;
+
+    // Calcul le pourcentage total des éléments
     for (int i = 0; i < size; i++) {
         sum += move[i].percentage;
     }
@@ -173,8 +176,9 @@ t_move selectRandomMove(tabMove move[], int size) {
     for (int i = 0; i < size; i++) {
         cumulative += move[i].percentage;
         if (random <= cumulative) {
-            // Réduire le pourcentage de l'élément sélectionné
-            move[i].percentage *= 0.9;  // Réduire le pourcentage par exemple de 10%
+
+            // Réduire le pourcentage de l'élément sélectionné (encore à déterminer)
+            move[i].percentage *= 0.9;
             return move[i].element;
         }
     }

@@ -109,9 +109,10 @@ int main() {
     printNodeSon(*phase_tree->root->sons[0]);
     printNodeSon(*phase_tree->root->sons[0]->sons[0]);
 
+    printf("profondeur de l'arbre : %d\n", phase_tree->depth);
+
 
     printf("\n\n\n");printf("\n\n\n");printf("\n\n\n");printf("\n\n\n");
-    printPhaseTree(*phase_tree);
 
     return 0;
 }

@@ -32,8 +32,6 @@ typedef struct {
     double percentage;  // Le pourcentage de probabilité de l'élément
 } tabMove;
 
-// Fonction pour sélectionner un élément en fonction des pourcentages
-t_move selectRandomMove(tabMove move[], int size);
 
 
 /**
@@ -58,5 +56,8 @@ t_localisation move(t_localisation, t_move);
  * @return none
  */
 void updateLocalisation(t_localisation *, t_move);
+
+// Fonction pour sélectionner un élément en fonction des pourcentages
+t_move selectRandomMove(tabMove move[], int size);
 
 #endif //UNTITLED1_MOVES_H

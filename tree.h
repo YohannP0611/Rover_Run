@@ -16,33 +16,40 @@ typedef struct s_tree
 void print_t(p_node);
 void displayTree(t_tree);
 
+// Créer un arbre vide
 t_tree createEmptyTree();
 
-void deleteTree(p_tree);
+// Supprimer un arbre (pas encore terminée)
+void deleteTree(p_tree tree);
 
+// Ajoute une racine à un arbre vide
 void addRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails);
 
-void addNode(p_tree tree, p_node node, t_move move); // Ajouter un noeud à l'arbre en donnant l'adresse du noeud parent
+// Fonction qui ajoute un noeud fils à un noeud donné
+void addNode(p_tree tree, p_node node, t_move move);
 
-p_node findNode(t_tree tree, p_move path, int depth);
+// Fonction qui retourne l'adresse d'un noeud à partir de son chemin et sa profondeur (pas encore terminée)
+p_node findNode( t_tree tree, p_move path, int depth);
 
-void afficher_arbre(t_tree tree);
-
-void afficher_arbre_recursive(p_node noeud, int niveau, p_move chemin, int tree_depth);
-
+// Fonction d'affchage pour un noeud et ses enfants
 void printNodeSon(t_node node);
 
+// Fonction d'affichae d'un rang de l'abre avec profondeur donnée (pas encore finie)
 void printTreeDepthNode(t_tree tree, int depth);
 
+// Fonction de calcul de puissance
 int puissance(int x, int y);
 
+// Fonction pour la création de l'arbre en fonction des mouvements
 p_tree createPhaseTree(h_std_list* phase_move);
 
 // Fonction qui ajoute un noeud fils à un noeud donné pour l'arbre de phase
 void addPhaseNode(p_tree tree, p_node node);
 
+// Fonction d'affichage des noeuds de l'arbre de Phase
 void printPhaseTree(t_tree tree);
 
+// Fonction qui ajoute un noeud fils à un noeud donné pour l'arbre de phase
 void printPhaseNode(t_node node);
 
 #endif //UNTITLED1_TREE_H

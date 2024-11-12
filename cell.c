@@ -26,6 +26,7 @@ p_cell createCell(t_move move) {
     return cell;
 }
 
+// Supprime une cellule
 void deleteCell(p_cell cell) {
     free(cell);
 }

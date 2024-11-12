@@ -17,14 +17,18 @@ typedef struct s_node
     p_move path; // chemin d'accès au noeud depuis le root
 } t_node, *p_node;
 
+// Créer un nouveau noeud
 t_node *createNode(t_move move, int nb_sons, int depth);
 
+// Supprimer un noeud (pas encore récursif dans le cas où le neoud a des enfants)
+void deleteNode(p_node node);
+// Affichage d'un noeud
 void printNode(t_node node, int indent);
 
-void deleteNode(p_node);
-
+// Fonction d'affichage du chemin du noeud à partir de la racine
 void printPath(p_move path, int depth);
 
+// Fonction pour d'indentation
 void print_indent(int nb);
 
 
