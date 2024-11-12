@@ -10,6 +10,7 @@
 typedef struct s_node
 {
     t_move move; //valeur stocké dans le noeud
+    char* char_move; // mouvement chaine de caractère
     int depth; // profondeur du noeud (profondeur du noeud précedent+1)
     struct s_node **sons;
     int nbSons; // taille physique du tableau

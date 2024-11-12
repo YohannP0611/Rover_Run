@@ -18,6 +18,9 @@ t_node *createNode(t_move move, int nb_sons, int depth) {
     // Allocation des espaces mémoires nécessaires aux différents tableaux
     node->sons = (t_node **)malloc(nb_sons*sizeof(t_node *));
     node->path = (t_move *)malloc((depth+1)*sizeof(t_move));
+    node->char_move = (char*)malloc(8*sizeof(char));
+    strcpy(node->char_move, getMoveAsString(move));
+
 
     // Mise à NULL de tous les fils du neoud
     for (int i=0; i <nb_sons; i++)
@@ -63,6 +66,8 @@ void printNode(t_node node, int indent) {
         // Affichage de son mouvement
         print_indent(indent);
         printf("[%d]\n", node.move);
+        print_indent(indent);
+        printf("[%s]\n", node.char_move);
 
         // Affichage de son nombre de fils total
         print_indent(indent);
@@ -98,6 +103,8 @@ void printNode(t_node node, int indent) {
         // Affichage de son mouvement
         print_indent(indent);
         printf("[%d]\n", node.move);
+        print_indent(indent);
+        printf("[%s]\n", node.char_move);
 
         // Affichage de son nombre de fils total
         print_indent(indent);

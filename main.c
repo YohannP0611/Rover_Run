@@ -4,6 +4,7 @@
 #include <time.h>
 
 int main() {
+
     t_map map = createMapFromFile("..\\maps\\example1.map");
     printf("Map created with dimensions %d x %d\n", map.y_max, map.x_max);
     for (int i = 0; i < map.y_max; i++)
@@ -114,5 +115,27 @@ int main() {
 
     printf("\n\n\n");printf("\n\n\n");printf("\n\n\n");printf("\n\n\n");
 
+    int x_init = 3;
+    int y_init = 0;
+    t_orientation  orientation_init = NORTH;
+
+    displayMap(map);
+    // printf the costs, aligned left 5 digits
+    for (int i = 0; i < map.y_max; i++)
+    {
+        for (int j = 0; j < map.x_max; j++)
+        {
+            printf("%-5d ", map.costs[i][j]);
+        }
+        printf("\n");
+    }
+
+    printf("\n\n\n");
+
+    t_localisation robot_loc = loc_init(x_init, y_init, orientation_init);
+    printf("localisation valide : %d\n", isValidLocalisation(robot_loc.pos, map.x_max, map.y_max));
+    printf("cout case : %d\n", map.costs[x_init][y_init]);
+    printf("position a droite valide: %d\n", isValidLocalisation(RIGHT(robot_loc.pos), map.x_max, map.y_max));
+    printf("cout case : %d\n", map.costs[RIGHT(robot_loc.pos).x][RIGHT(robot_loc.pos).y]);
     return 0;
 }
