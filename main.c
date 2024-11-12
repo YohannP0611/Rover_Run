@@ -137,5 +137,9 @@ int main() {
     printf("cout case : %d\n", map.costs[x_init][y_init]);
     printf("position a droite valide: %d\n", isValidLocalisation(RIGHT(robot_loc.pos), map.x_max, map.y_max));
     printf("cout case : %d\n", map.costs[RIGHT(robot_loc.pos).x][RIGHT(robot_loc.pos).y]);
+
+
+
+    printf("cout case : %d\n", map.costs[robot_loc.pos.x][robot_loc.pos.y]);
     return 0;
 }
