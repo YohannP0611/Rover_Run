@@ -39,8 +39,12 @@ void printNode(t_node node, int indent) {
         print_indent(indent);
         printf("[%d]\n", node.move);
         print_indent(indent);
-        displayHList(*node.avails);
-        printf("\n");
+        printf("[%d]\n", node.nbSons);
+        if (node.nbSons > 0) {
+            print_indent(indent);
+            displayHList(*node.avails);
+            printf("\n");
+        }
     } else {
 
         print_indent(indent);
@@ -56,8 +60,13 @@ void printNode(t_node node, int indent) {
         print_indent(indent);
         printf("[%d]\n", node.move);
         print_indent(indent);
-        displayHList(*node.avails);
-        printf("\n");
+        printf("[%d]\n", node.nbSons);
+
+        if (node.nbSons > 0) {
+            print_indent(indent);
+            displayHList(*node.avails);
+            printf("\n");
+        }
 
     }
 

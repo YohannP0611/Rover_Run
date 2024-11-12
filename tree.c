@@ -42,36 +42,37 @@ void addNode(p_tree tree, p_node node, t_move move) {
         printf("Arbre ne contient pas de root\n");
     }
     else {
+        if (node->nbSons > 0) {
+            // Création du nouveau noeud (enfant)
+            p_node new_node = createNode(move, node->nbSons - 1, node->depth + 1);
 
-        // Création du nouveau noeud (enfant)
-        p_node new_node = createNode(move, node->nbSons - 1, node->depth + 1);
+            int j = 0;
+            while (j < node->nbSons ) {
 
-        int j = 0;
-        while (j < node->nbSons ) {
+                // Ajout du nouveau noeud fils
+                if (node->sons[j] == NULL) {
+                    node->sons[j] = new_node;
 
-            // Ajout du nouveau noeud fils
-            if (node->sons[j] == NULL) {
-                node->sons[j] = new_node;
+                    // Définition du chemin pour accéder au noeud à partir de la racine de l'arbre
+                    for (int k = 0; k < node->depth + 1; k++) {
+                        new_node->path[k] = node->path[k];
+                    }
 
-                // Définition du chemin pour accéder au noeud à partir de la racine de l'arbre
-                for (int k = 0; k < node->depth + 1; k++) {
-                    new_node->path[k] = node->path[k];
+                    // Affectation des movements encore disponible
+                    new_node->avails = removeElt(*node->avails, move);
+
+
+                    // Affectation du nouveau mouvement dans le chemin
+                    new_node->path[node->depth + 1] = new_node->move;
+
+                    // Changement de la profondeur total de l'arbre dans le cas où le nouveau noeud est le plus profond
+                    if(tree->depth < new_node->depth) {
+                        tree->depth = new_node->depth;
+                    }
+                    return;
                 }
-
-                // Affectation des movements encore disponible
-                new_node->avails = removeElt(*node->avails, move);
-
-
-                // Affectation du nouveau mouvement dans le chemin
-                new_node->path[node->depth + 1] = new_node->move;
-
-                // Changement de la profondeur total de l'arbre dans le cas où le nouveau noeud est le plus profond
-                if(tree->depth < new_node->depth) {
-                    tree->depth = new_node->depth;
-                }
-                return;
+                j++;
             }
-            j++;
         }
     }
 }
@@ -236,7 +237,7 @@ p_tree createPhaseTree(h_std_list* phase_move) {
 // Fonction qui ajoute un noeud fils à un noeud donné pour l'arbre de phase
 void addPhaseNode(p_tree tree, p_node node) {
 
-    if (node->nbSons == 0) {
+    if (node->nbSons < 1) {
         return;
     }
     else {
@@ -246,6 +247,33 @@ void addPhaseNode(p_tree tree, p_node node) {
         }
         for (int i = 0; i < node->nbSons; i++) {
             addPhaseNode(tree, node->sons[i]);
+        }
+    }
+}
+
+void printPhaseTree(t_tree tree) {
+
+    printPhaseNode(*tree.root);
+}
+
+// Fonction qui ajoute un noeud fils à un noeud donné pour l'arbre de phase
+void printPhaseNode(t_node node) {
+
+    if (node.nbSons == 0) {
+        return;
+    }
+    else {
+        if (node.nbSons > 0) {
+            for (int i = 0; i < node.nbSons; i++) {
+
+                printNodeSon(*node.sons[i]);
+            }
+            for (int i = 0; i < node.nbSons; i++) {
+
+                printPhaseNode(*node.sons[i]);
+
+
+            }
         }
     }
 }

@@ -41,6 +41,8 @@ p_tree createPhaseTree(h_std_list* phase_move);
 // Fonction qui ajoute un noeud fils à un noeud donné pour l'arbre de phase
 void addPhaseNode(p_tree tree, p_node node);
 
+void printPhaseTree(t_tree tree);
 
+void printPhaseNode(t_node node);
 
 #endif //UNTITLED1_TREE_H

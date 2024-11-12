@@ -27,12 +27,14 @@ void displayHList(h_std_list list) {
 
     p_cell tmp = list.head;
     printf("[");
+
     while(tmp->next != NULL) {
         displayCell(*tmp);
         printf(",");
         tmp = tmp->next;
     }
-    displayCell(*tmp);
+        displayCell(*tmp);
+
     printf("]");
     return;
 
@@ -56,6 +58,7 @@ void Deleteelt(h_std_list* list, t_move move) {
 h_std_list* removeElt(h_std_list list, t_move move) {
     h_std_list* list2 = createListEmpty();
     int remove = 0;
+
     if (list.head == NULL) {
         printf("Liste vide\n");
         return NULL;
