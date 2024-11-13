@@ -15,7 +15,6 @@ t_node *createNode(t_move move, int nb_sons, int depth) {
     node->nbSons = nb_sons;
     node->depth = depth;
     node->case_cost = 65000;
-    node->localisation = (t_localisation *) malloc(sizeof (t_localisation));
 
 
 

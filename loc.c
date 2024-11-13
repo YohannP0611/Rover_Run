@@ -50,3 +50,8 @@ t_position DOWN(t_position pos)
     return new_pos;
 }
 
+char *getOrientationAsString(t_orientation ori)
+{
+    return _ori[ori];
+}
+

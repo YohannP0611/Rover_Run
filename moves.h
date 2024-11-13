@@ -60,4 +60,20 @@ void updateLocalisation(t_localisation *, t_move);
 // Fonction pour sélectionner un élément en fonction des pourcentages
 t_move selectRandomMove(tabMove move[], int size);
 
+/**
+ * @brief Function to rotate the robot according to a move and its actual orientation
+ * @param ori : the actual orientation of the robot
+ * @param move : the move to do
+ * @return the new orientation of the robot
+ */
+t_orientation rotate(t_orientation, t_move );
+
+/**
+ * @brief function to translate the robot according to a move and its actual position
+ * @param loc : the actual localisation of the robot
+ * @param move : the move to do
+ * @return the new localisation of the robot
+ */
+t_localisation translate(t_localisation loc, t_move move);
+
 #endif //UNTITLED1_MOVES_H

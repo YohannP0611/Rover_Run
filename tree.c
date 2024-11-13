@@ -328,7 +328,7 @@ void printPhaseNode(t_node node) {
 }
 
 // Fonction pour la création de l'arbre en fonction des mouvements
-p_tree createCostCasePhaseTree(h_std_list* phase_move, t_map map, int x, int y, t_orientation orientation) {
+p_tree createCostCasePhaseTree(h_std_list* phase_move, t_map map, t_localisation loc) {
 
     // Création de l'arbre vide
     p_tree tree = (p_tree) malloc(sizeof(t_tree));
@@ -338,11 +338,9 @@ p_tree createCostCasePhaseTree(h_std_list* phase_move, t_map map, int x, int y, 
     int nbMove = countEltHList(*phase_move);
 
     // Ajout de la racine
-    addRoot(tree, U_TURN, nbMove, phase_move);
+    addCostRoot(tree, U_TURN, nbMove, phase_move, loc, map);
 
-    tree->root->case_cost = 0;
-    *tree->root->localisation = loc_init(x,y,orientation);
-    printf("root valide : %d\n", isValidLocalisation(tree->root->localisation->pos, map.x_max, map.y_max));
+    printCostCaseNode(*tree->root, 6);
 
     // Appel de la fonction récursive pour la création de tous les noeuds
     addCostCasePhaseNode(tree, tree->root, map);
@@ -417,19 +415,26 @@ void addCostCaseNode(p_tree tree, p_node node, t_move number_move, t_map map) {
                         tree->depth = new_node->depth;
                     }
 
-                    printf("movement : %d\n", (move(*node->localisation, number_move).pos, map.x_max, map.y_max));
-                    printf("Cost : %d\n", map.costs[new_node->localisation->pos.x][new_node->localisation->pos.y]);
-                    printf("valide : %d\n", isValidLocalisation(move(*node->localisation, number_move).pos, map.x_max, map.y_max));
+                    printf("mouvement : %s\n", getMoveAsString(number_move));
+
+                    printf("valide : %d\n", isValidLocalisation(move(node->localisation, number_move).pos, map.x_max, map.y_max));
 
 
-                    if (isValidLocalisation(move(*node->localisation, number_move).pos, map.x_max, map.y_max)) {
-                        *new_node->localisation = move(*node->localisation, number_move);
-                        new_node->case_cost = map.costs[new_node->localisation->pos.x][new_node->localisation->pos.y];
+                    if (isValidLocalisation(move(node->localisation, number_move).pos, map.x_max, map.y_max)) {
+                        printf("Cost : %d\n", map.costs[new_node->localisation.pos.x][new_node->localisation.pos.y]);
+                        new_node->localisation = move(node->localisation, number_move);
+                        new_node->case_cost = map.costs[new_node->localisation.pos.x][new_node->localisation.pos.y];
+                        printf("x : %d\n", new_node->localisation.pos.x);
+                        printf("y : %d\n", new_node->localisation.pos.y);
                     }
                     else {
-                        new_node->case_cost = 600;
+                        printf("x : %d\n", new_node->localisation.pos.x);
+                        printf("y : %d\n", new_node->localisation.pos.y);
+                        printf("pas d'enfant pour le noeud\n");
+                        new_node->nbSons = 0;
+                        new_node->case_cost = 13000;
                     }
-
+                    printCostCaseNode(*new_node, 1);
                     return;
                 }
                 j++;
@@ -494,4 +499,34 @@ void printCostCaseNodeSon(t_node node) {
     }
     printf("\n");
 
+}
+
+void addCostRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails, t_localisation localisation, t_map map) {
+
+    // Si l'arbre n'a pas encore de racine
+    if (tree->root == NULL) {
+
+        // Créer un nouveau noeud
+        tree->root = createNode(move, nbSon, 0);
+        tree->root->path = (p_move) malloc(sizeof(t_move));
+
+        // Affecter son chemin (pour la racine ce chemin est toujours 0)
+        tree->root->path[0] = tree->root->move;
+
+        // Affecter le tableau des mouvements restants
+        tree->root->avails = avails;
+
+        // Affecter la localisation
+        tree->root->localisation = localisation;
+
+        tree->root->case_cost = map.costs[tree->root->localisation.pos.x][tree->root->localisation.pos.y];
+
+        // Affecter la profonceur (profondeur de la racie est de 0)
+        tree->depth = 0;
+    }
+
+    // Si l'arbre a déjà une racine
+    else {
+        printf("Arbre contenant un root");
+    }
 }

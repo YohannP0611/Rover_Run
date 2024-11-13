@@ -5,6 +5,12 @@
 #ifndef UNTITLED1_LOC_H
 #define UNTITLED1_LOC_H
 
+
+/**
+ * @brief Array of strings for the possible moves of the robot
+ */
+static char _ori[5][6] = {"NORTH", "EAST", "SOUTH", "WEST"};
+
 /**
  * @brief Enum for the orientation of the robot (NORTH, EAST, SOUTH, WEST)
  */
@@ -79,5 +85,7 @@ t_position UP(t_position);
  * @return the DOWN position
  */
 t_position DOWN(t_position);
+
+char *getOrientationAsString(t_orientation ori);
 
 #endif //UNTITLED1_LOC_H

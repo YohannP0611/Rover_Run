@@ -10,27 +10,15 @@
 /* prototypes of local functions */
 /* local functions are used only in this file, as helper functions */
 
-/**
- * @brief Function to rotate the robot according to a move and its actual orientation
- * @param ori : the actual orientation of the robot
- * @param move : the move to do
- * @return the new orientation of the robot
- */
-t_orientation rotate(t_orientation, t_move );
 
-/**
- * @brief function to translate the robot according to a move and its actual position
- * @param loc : the actual localisation of the robot
- * @param move : the move to do
- * @return the new localisation of the robot
- */
-t_localisation translate(t_localisation , t_move);
+
+
 
 /* definition of local functions */
 
 t_orientation rotate(t_orientation ori, t_move move)
 {
-    int rst;
+    int rst = 0;
     switch (move)
     {
         case T_LEFT:
@@ -56,6 +44,8 @@ t_localisation translate(t_localisation loc, t_move move)
      *  - the origin (x=0, y=0) is at the top left corner
      */
     t_position res;
+    res.x = loc.pos.x;
+    res.y = loc.pos.y;
     switch (move) {
         case F_10:
             switch (loc.ori) {
@@ -146,8 +136,10 @@ char *getMoveAsString(t_move move)
 t_localisation move(t_localisation loc, t_move move)
 {
     t_localisation new_loc;
-    new_loc.ori = rotate(loc.ori, move);
     new_loc = translate(loc, move);
+    new_loc.ori = rotate(loc.ori, move);
+
+
     return new_loc;
 }
 

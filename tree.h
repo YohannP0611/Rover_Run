@@ -57,8 +57,10 @@ void addCostCaseNode(p_tree tree, p_node node, t_move number_move, t_map map);
 
 void addCostCasePhaseNode(p_tree tree, p_node node, t_map map);
 
-p_tree createCostCasePhaseTree(h_std_list* phase_move, t_map map,  int x, int y, t_orientation orientation);
+p_tree createCostCasePhaseTree(h_std_list* phase_move, t_map map, t_localisation loc);
 
 void printCostCaseNodeSon(t_node node);
+
+void addCostRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails, t_localisation localisation, t_map map);
 
 #endif //UNTITLED1_TREE_H
