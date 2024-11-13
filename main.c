@@ -3,7 +3,12 @@
 #include "tree.h"
 #include <time.h>
 
+
 int main() {
+
+
+
+
     t_map map = createMapFromFile("..\\maps\\example1.map");
     printf("x_max : %d\n", map.x_max);
     printf("y_max : %d\n", map.y_max);
@@ -111,10 +116,6 @@ int main() {
 
         t_localisation root_loc = loc_init(x_init, y_init, orientation_init);
 
-        p_tree ptr_phase_tree = createFullTreePhase(move_list, map, robot_loc, nbMoveSelect);
-
-        printf("%d", ptr_phase_tree->depth);
-
 
         char guidage;
 
@@ -122,10 +123,20 @@ int main() {
         scanf(" %c", &guidage);
         printf("\n");
         if (guidage == 'Y') {
-            printPath(*searchBetterPathNode(*ptr_phase_tree));
+            p_tree ptr_phase_tree = createFullTreePhase(move_list, map, robot_loc, nbMoveSelect);
+            printf("Le chemin le moins couteux est : ");
+
+            p_node node = searchBetterPathNode(*ptr_phase_tree);
+            printPath(*node);
+
+            printf("\n\nSoit la suite de mouvement : [");
+            for(int i = 0; i < node->depth; i++) {
+                printf("%s - ", getMoveAsString(node->path[i]));
+            }
+            printf("%s]\n\n\n", getMoveAsString(node->path[node->depth]));
         }
         else {
-            printf("Tant pis...");
+            printf("Activation échouée... ");
         }
 
 

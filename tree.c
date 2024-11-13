@@ -340,8 +340,6 @@ p_tree createFullTreePhase(h_std_list* phase_move, t_map map, t_localisation loc
     // Ajout de la racine
     addFullRoot(tree, U_TURN, nbMove, phase_move, loc, map);
 
-    printFullNode(*tree->root, 6);
-
     // Appel de la fonction récursive pour la création de tous les noeuds
     addFullNodePhase(tree, tree->root, map, max_depth);
 
@@ -416,32 +414,18 @@ void addFullNode(p_tree tree, p_node node, t_move number_move, t_map map, int ma
                         tree->depth = new_node->depth;
                     }
 
-                    printf("mouvement : %s\n", getMoveAsString(number_move));
-
-                    printf("valide : %d\n", isValidLocalisation(move(node->localisation, number_move).pos, map.x_max, map.y_max));
-
-
+                    // Si la nouvelle localisation appartient à la map
                     if (isValidLocalisation(move(node->localisation, number_move).pos, map.x_max, map.y_max)) {
 
-                        printPath(*new_node);
-
-
+                        // Le nouveau noeud prend la localisation après mouvement
                         new_node->localisation = move(node->localisation, number_move);
-                        printf("x : %d\n", new_node->localisation.pos.x);
-                        printf("y : %d\n", new_node->localisation.pos.y);
                         new_node->case_cost = map.costs[new_node->localisation.pos.x][new_node->localisation.pos.y];
-                        printf("Cost : %d\n", map.costs[new_node->localisation.pos.x][new_node->localisation.pos.y]);
-                        printf("Cost : %d\n", new_node->case_cost);
 
                     }
                     else {
-                        printf("x : %d\n", new_node->localisation.pos.x);
-                        printf("y : %d\n", new_node->localisation.pos.y);
-                        printf("pas d'enfant pour le noeud\n");
                         new_node->nbSons = 0;
                         new_node->case_cost = 13000;
                     }
-                    printFullNode(*new_node, 1);
                     return;
                 }
                 j++;
