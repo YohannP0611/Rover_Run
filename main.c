@@ -8,6 +8,9 @@ int main() {
     printf("x_max : %d\n", map.x_max);
     printf("y_max : %d\n", map.y_max);
 
+
+
+
     printf("Map created with dimensions %d x %d\n", map.y_max, map.x_max);
     for (int i = 0; i < map.y_max; i++)
     {
@@ -36,7 +39,7 @@ int main() {
 
         printf("\n\n\n");
 
-        int nbMaxMove = 5;
+
 
         srand(time(NULL));
 
@@ -50,8 +53,20 @@ int main() {
             {T_RIGHT, 10.0},
             {T_LEFT, 10.0}
         };
-
+        // Nombre de mouvements au total
         int nbMove = 6;
+
+        // Nombre de mouvements tiré
+        int nbMaxMove = 5;
+
+        // Nombre de mouvement sélectionné
+        int nbMoveSelect = 1;
+
+        printf("Nombre de tirage pour les mouvement :");
+        scanf(" %d", &nbMaxMove);
+
+        printf("Nombre de mouvement disponible dans une phase :");
+        scanf(" %d", &nbMoveSelect);
 
         h_std_list* move_list = createListEmpty();
 
@@ -64,70 +79,24 @@ int main() {
 
         printf("\n\n\n");
 
-        t_tree tree = createEmptyTree();
+        // Définition des données initiales
+        int x_init = randomNumber(0, map.x_max-1);
+        int y_init = randomNumber(0, map.y_max-1);
+        t_orientation  orientation_init = randomNumber(0, 3);
 
-        addRoot(&tree, U_TURN, nbMaxMove, move_list);
-
-        displayHList(*tree.root->avails);
-
-        p_node node = tree.root;
-
-
-        addNode(&tree, node, F_10);
-
-        printf("\n\n");
-        displayHList(*tree.root->sons[0]->avails);
-
-        addNode(&tree, node, F_20);
-
-        printf("\n\n");
-        displayHList(*tree.root->sons[1]->avails);
+        // Définition des coordonnées de base du robot
+        t_localisation robot_loc = loc_init(x_init, y_init, orientation_init);
+        printf("robot x : %d\n", robot_loc.pos.x);
+        printf("robot y : %d\n", robot_loc.pos.y);
+        printf("robot orientation : %s\n", getOrientationAsString(robot_loc.ori));
 
 
-        addNode(&tree, node->sons[0], F_30);
 
-        printf("\n\n");
-        displayHList(*node->sons[0]->sons[0]->avails);
-
-        addNode(&tree, node->sons[1], B_10);
-
-        printf("\n\n");
-        displayHList(*node->sons[1]->sons[0]->avails);
-
-        addNode(&tree, node->sons[1], T_LEFT);
-
-        printf("\n\n");
-        displayHList(*node->sons[1]->sons[1]->avails);
-
-        printf("\n\n");
-        printNodeSon(*node);
-        printf("\n\n\n");
-
-        printNodeSon(*node->sons[1]);
-
-        printf("\n\n\n");
-        printNode(*node->sons[0]->sons[0], 1);
-
-        printf("\n\n\n");
-
-        p_tree phase_tree = createPhaseTree(move_list);
-
-        printf("\n\n\n");
-        printNodeSon(*phase_tree->root);
-        printf("\n\n\n");
-        printNodeSon(*phase_tree->root->sons[0]);
-        printNodeSon(*phase_tree->root->sons[0]->sons[0]);
-
-        printf("profondeur de l'arbre : %d\n", phase_tree->depth);
-
-
-        printf("\n\n\n");printf("\n\n\n");printf("\n\n\n");printf("\n\n\n");
-
-        int x_init = 4;
-        int y_init = 4;
-        t_orientation  orientation_init = SOUTH;
+        // Position de la base
+        t_position base_station_loc = getBaseStationPosition(map);
 
         displayMap(map);
+
         // printf the costs, aligned left 5 digits
         for (int i = 0; i < map.y_max; i++)
         {
@@ -141,92 +110,31 @@ int main() {
         printf("\n\n\n");
 
         t_localisation root_loc = loc_init(x_init, y_init, orientation_init);
-        createCostCasePhaseTree(move_list, map, root_loc);
+
+        p_tree ptr_phase_tree = createFullTreePhase(move_list, map, robot_loc, nbMoveSelect);
+
+        printf("%d", ptr_phase_tree->depth);
+
+
+        char guidage;
+
+        printf("\n\n\n\nActiver le système de guidage automatique ? [Y/n] : ");
+        scanf(" %c", &guidage);
+        printf("\n");
+        if (guidage == 'Y') {
+            printPath(*searchBetterPathNode(*ptr_phase_tree));
+        }
+        else {
+            printf("Tant pis...");
+        }
 
 
 
     }
 
+    while (running == 0) {
+        displayMap(map);
 
-    if (running == 0) {
-        int nbMaxMove = 5;
-
-        srand(time(NULL));
-
-
-        // Exemple de tableau d'éléments avec leurs pourcentages initiaux
-        tabMove items[] = {
-            {F_10, 30.0},
-            {F_20, 25.0},
-            {F_30, 20.0},
-            {B_10, 15.0},
-            {T_RIGHT, 10.0},
-            {T_LEFT, 10.0}
-        };
-
-        int nbMove = 6;
-
-        h_std_list* move_list = createListEmpty();
-
-        // Sélectionner n éléments
-        for (int i = 0; i < nbMaxMove; i++) {
-            t_move selected = selectRandomMove(items, nbMove);
-            addTailList(move_list, selected);
-            printf("Element selectionne : %d\n", selected);
-        }
-
-
-        int x_init = 3;
-        int y_init = 1;
-        t_orientation  orientation_init = SOUTH;
-
-        t_tree tree_cost = createEmptyTree();
-
-
-        addCostRoot(&tree_cost, U_TURN, nbMaxMove, move_list, loc_init(x_init,y_init,orientation_init), map);
-
-        p_node node = tree_cost.root;
-
-
-        printf("%d\n", node->localisation.pos.x);
-        printf("%d\n", node->localisation.pos.x);
-        printf("%d\n", map.costs[node->localisation.pos.x][node->localisation.pos.y]);
-        printCostCaseNode(*node, 0);
-
-        //addCostCaseNode(&tree_cost, node, F_10, map);
-
-        printf("x : %d\n", node->localisation.pos.x);
-        printf("y : %d\n", node->localisation.pos.y);
-
-
-        printf("valide : %d\n", isValidLocalisation(node->localisation.pos, map.x_max, map.y_max));
-
-        printf("valide : %d\n", isValidLocalisation(node->localisation.pos, map.x_max, map.y_max));
-
-        printf("x : %d\n", node->localisation.pos.x);
-        printf("y : %d\n", node->localisation.pos.y);
-        printf("cost : %d\n", map.costs[node->localisation.pos.x][node->localisation.pos.y]);
-        printf("ori : %s\n", getOrientationAsString(node->localisation.ori));
-
-        addCostCaseNode(&tree_cost, node, T_RIGHT, map);
-        printf("\n\n\n");
-
-
-
-        printCostCaseNode(*node->sons[0], 0);
-
-        printf("ori : %s\n", getOrientationAsString(node->sons[0]->localisation.ori));
-
-        printf("ori : %s\n", getOrientationAsString(rotate(node->sons[0]->localisation.ori, T_RIGHT)));
-        updateLocalisation(&node->sons[0]->localisation, T_RIGHT);
-        printf("ori : %s\n", getOrientationAsString(node->sons[0]->localisation.ori));
-        updateLocalisation(&node->sons[0]->localisation, F_10);
-
-        printf("x : %d\n", node->sons[0]->localisation.pos.x);
-        printf("y : %d\n", node->sons[0]->localisation.pos.y);
-        printf("\n\n\n");
-
-        printCostCaseNode(*node->sons[0], 0);
     }
     return 0;
 }

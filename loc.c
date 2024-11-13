@@ -3,6 +3,7 @@
 //
 
 #include "loc.h"
+#include <stdlib.h>
 
 t_localisation loc_init(int x, int y, t_orientation ori)
 {
@@ -53,5 +54,11 @@ t_position DOWN(t_position pos)
 char *getOrientationAsString(t_orientation ori)
 {
     return _ori[ori];
+}
+
+int randomNumber(int min, int max) {
+
+    return min + rand() % (max - min + 1);
+
 }
 

@@ -53,14 +53,18 @@ void printPhaseTree(t_tree tree);
 // Fonction qui ajoute un noeud fils à un noeud donné pour l'arbre de phase
 void printPhaseNode(t_node node);
 
-void addCostCaseNode(p_tree tree, p_node node, t_move number_move, t_map map);
+void addFullNode(p_tree tree, p_node node, t_move number_move, t_map map, int max_depth);
 
-void addCostCasePhaseNode(p_tree tree, p_node node, t_map map);
+void addFullNodePhase(p_tree tree, p_node node, t_map map, int max_depth);
 
-p_tree createCostCasePhaseTree(h_std_list* phase_move, t_map map, t_localisation loc);
+p_tree createFullTreePhase(h_std_list* phase_move, t_map map, t_localisation loc, int max_depth);
 
-void printCostCaseNodeSon(t_node node);
+void printFullNodeSon(t_node node);
 
-void addCostRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails, t_localisation localisation, t_map map);
+void addFullRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails, t_localisation localisation, t_map map);
+
+p_node searchBetterNode(p_node node);
+
+p_node searchBetterPathNode(t_tree tree);
 
 #endif //UNTITLED1_TREE_H

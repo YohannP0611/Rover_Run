@@ -328,7 +328,7 @@ void printPhaseNode(t_node node) {
 }
 
 // Fonction pour la création de l'arbre en fonction des mouvements
-p_tree createCostCasePhaseTree(h_std_list* phase_move, t_map map, t_localisation loc) {
+p_tree createFullTreePhase(h_std_list* phase_move, t_map map, t_localisation loc, int max_depth) {
 
     // Création de l'arbre vide
     p_tree tree = (p_tree) malloc(sizeof(t_tree));
@@ -338,19 +338,19 @@ p_tree createCostCasePhaseTree(h_std_list* phase_move, t_map map, t_localisation
     int nbMove = countEltHList(*phase_move);
 
     // Ajout de la racine
-    addCostRoot(tree, U_TURN, nbMove, phase_move, loc, map);
+    addFullRoot(tree, U_TURN, nbMove, phase_move, loc, map);
 
-    printCostCaseNode(*tree->root, 6);
+    printFullNode(*tree->root, 6);
 
     // Appel de la fonction récursive pour la création de tous les noeuds
-    addCostCasePhaseNode(tree, tree->root, map);
+    addFullNodePhase(tree, tree->root, map, max_depth);
 
     return tree;
 
 }
 
 // Fonction qui ajoute un noeud fils à un noeud donné pour l'arbre de phase
-void addCostCasePhaseNode(p_tree tree, p_node node, t_map map) {
+void addFullNodePhase(p_tree tree, p_node node, t_map map, int max_depth) {
 
     // Si le noeud n'admet plus de noeud fils
     if (node->nbSons < 1) {
@@ -359,21 +359,22 @@ void addCostCasePhaseNode(p_tree tree, p_node node, t_map map) {
 
         // Sinon
     else {
+        if (node->depth < max_depth) {
+            // Ajout des noeuds fils en fonction des mouvements restants
+            for (int i = 0; i < node->nbSons; i++) {
+                addFullNode(tree, node, findElt(*node->avails, i), map, max_depth);
+            }
 
-        // Ajout des noeuds fils en fonction des mouvements restants
-        for (int i = 0; i < node->nbSons; i++) {
-            addCostCaseNode(tree, node, findElt(*node->avails, i), map);
-        }
-
-        // Appel récursif de la fonction pour constuire l'abre entier
-        for (int i = 0; i < node->nbSons; i++) {
-            addCostCasePhaseNode(tree, node->sons[i], map);
+            // Appel récursif de la fonction pour constuire l'abre entier
+            for (int i = 0; i < node->nbSons; i++) {
+                addFullNodePhase(tree, node->sons[i], map, max_depth);
+            }
         }
     }
 }
 
-// Fonction qui ajoute un noeud fils à un noeud donné
-void addCostCaseNode(p_tree tree, p_node node, t_move number_move, t_map map) {
+// Fonction qui ajoute un noeud fils à un noeud donné (version la plus avancée, prenant en charge le coût des cases)
+void addFullNode(p_tree tree, p_node node, t_move number_move, t_map map, int max_depth) {
 
     // Pour le cas où l'arbre est vide
     if (tree->root == NULL) {
@@ -422,7 +423,7 @@ void addCostCaseNode(p_tree tree, p_node node, t_move number_move, t_map map) {
 
                     if (isValidLocalisation(move(node->localisation, number_move).pos, map.x_max, map.y_max)) {
 
-                        printPath(new_node->path, new_node->depth);
+                        printPath(*new_node);
 
 
                         new_node->localisation = move(node->localisation, number_move);
@@ -440,7 +441,7 @@ void addCostCaseNode(p_tree tree, p_node node, t_move number_move, t_map map) {
                         new_node->nbSons = 0;
                         new_node->case_cost = 13000;
                     }
-                    printCostCaseNode(*new_node, 1);
+                    printFullNode(*new_node, 1);
                     return;
                 }
                 j++;
@@ -450,10 +451,10 @@ void addCostCaseNode(p_tree tree, p_node node, t_move number_move, t_map map) {
 }
 
 // Fonction d'affchage pour un noeud et ses enfants
-void printCostCaseNodeSon(t_node node) {
+void printFullNodeSon(t_node node) {
 
     // Affiche le noeud indenté en fonction de son nombre de fils
-    printCostCaseNode(node, ((node.nbSons * 5 + 7 * (node.nbSons - 1)) / 2) - 1);
+    printFullNode(node, ((node.nbSons * 5 + 7 * (node.nbSons - 1)) / 2) - 1);
 
 
     // Afficher le n° de chaque noeud fils avec indentation
@@ -507,7 +508,7 @@ void printCostCaseNodeSon(t_node node) {
 
 }
 
-void addCostRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails, t_localisation localisation, t_map map) {
+void addFullRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails, t_localisation localisation, t_map map) {
 
     // Si l'arbre n'a pas encore de racine
     if (tree->root == NULL) {
@@ -535,4 +536,38 @@ void addCostRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails, t_loca
     else {
         printf("Arbre contenant un root");
     }
+}
+
+// Recherche le chemin avec le moins de point et renvoie le dernier noeud de celui-ci
+p_node searchBetterPathNode(t_tree tree) {
+    p_node node = tree.root;
+
+    // Parcourir jusqu'à atteindre une feuille
+    while (node != searchBetterNode(node)) {
+        node = searchBetterNode(node);  // Aller au nœud avec le coût minimal
+
+    }
+    return node;
+}
+
+p_node searchBetterNode(p_node node) {
+    if (node->nbSons == 0) {
+        return node;  // Si c'est une feuille, la retourner
+    }
+
+    int cost_min = INT_MAX;  // Initialiser le coût minimal à une valeur très élevée
+    p_node node_min = NULL;
+
+    for (int i = 0; i < node->nbSons; i++) {
+        p_node child = node->sons[i];
+        if (child != NULL) {
+            if (child->case_cost < cost_min) {
+                cost_min = child->case_cost;  // Mettre à jour le coût minimal
+                node_min = child;             // Mettre à jour le nœud avec le coût minimal
+            }
+        }
+    }
+
+    // Si aucun nœud enfant n'est trouvé (cas théorique), renvoyer le nœud actuel
+    return (node_min != NULL) ? node_min : node;
 }

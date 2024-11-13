@@ -88,4 +88,6 @@ t_position DOWN(t_position);
 
 char *getOrientationAsString(t_orientation ori);
 
+int randomNumber(int min, int max);
+
 #endif //UNTITLED1_LOC_H

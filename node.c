@@ -89,7 +89,7 @@ void printNode(t_node node, int indent) {
 
         // Affichage de son chemin depuis la racine
         print_indent(indent);
-        printPath(node.path, node.depth);
+        printPath(node);
         printf("\n");
 
         // Affichage des éléments visuels
@@ -125,17 +125,17 @@ void printNode(t_node node, int indent) {
 }
 
 // Fonction d'affichage du chemin du noeud à partir de la racine
-void printPath(p_move path, int depth) {
+void printPath(t_node node) {
 
     printf("[{");
     int i = 0;
-    while (i != depth) {
+    while (i != node.depth) {
 
-        printf("%d-", path[i]);
+        printf("%d-", node.path[i]);
         i++;
     }
 
-    printf("%d}@]", path[depth]);
+    printf("%d}@]", node.path[node.depth]);
 }
 
 // Fonction pour d'indentation
@@ -145,7 +145,7 @@ void print_indent(int nb) {
     }
 }
 
-void printCostCaseNode(t_node node, int indent) {
+void printFullNode(t_node node, int indent) {
 
     // Si le noeud est la racine
     if(node.depth == 0) {
@@ -187,7 +187,7 @@ void printCostCaseNode(t_node node, int indent) {
 
         // Affichage de son chemin depuis la racine
         print_indent(indent);
-        printPath(node.path, node.depth);
+        printPath(node);
         printf("\n");
 
         // Affichage des éléments visuels
@@ -210,6 +210,10 @@ void printCostCaseNode(t_node node, int indent) {
         // Affichage de son nombre de fils total
         print_indent(indent);
         printf("[%d]\n", node.nbSons);
+
+        // Affichage de son cout de case
+        print_indent(indent);
+        printf("[depth : %d]\n", node.depth);
 
         // Affichage de son cout de case
         print_indent(indent);

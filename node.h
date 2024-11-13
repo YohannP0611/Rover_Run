@@ -29,12 +29,12 @@ void deleteNode(p_node node);
 void printNode(t_node node, int indent);
 
 // Fonction d'affichage du chemin du noeud à partir de la racine
-void printPath(p_move path, int depth);
+void printPath(t_node node);
 
 // Fonction pour d'indentation
 void print_indent(int nb);
 
-void printCostCaseNode(t_node node, int indent);
+void printFullNode(t_node node, int indent);
 
 
 #endif //UNTITLED1_NODE_H
