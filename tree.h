@@ -6,6 +6,7 @@
 #define UNTITLED1_TREE_H
 
 #include "node.h"
+#include "map.h"
 
 typedef struct s_tree
 {
@@ -26,7 +27,7 @@ void deleteTree(p_tree tree);
 void addRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails);
 
 // Fonction qui ajoute un noeud fils à un noeud donné
-void addNode(p_tree tree, p_node node, t_move move);
+void addNode(p_tree tree, p_node node, t_move number_move);
 
 // Fonction qui retourne l'adresse d'un noeud à partir de son chemin et sa profondeur (pas encore terminée)
 p_node findNode( t_tree tree, p_move path, int depth);
@@ -51,5 +52,13 @@ void printPhaseTree(t_tree tree);
 
 // Fonction qui ajoute un noeud fils à un noeud donné pour l'arbre de phase
 void printPhaseNode(t_node node);
+
+void addCostCaseNode(p_tree tree, p_node node, t_move number_move, t_map map);
+
+void addCostCasePhaseNode(p_tree tree, p_node node, t_map map);
+
+p_tree createCostCasePhaseTree(h_std_list* phase_move, t_map map,  int x, int y, t_orientation orientation);
+
+void printCostCaseNodeSon(t_node node);
 
 #endif //UNTITLED1_TREE_H

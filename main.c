@@ -28,7 +28,7 @@ int main() {
 
     printf("\n\n\n");
 
-    int nbMaxMove = 4;
+    int nbMaxMove = 5;
 
     srand(time(NULL));
 
@@ -115,8 +115,8 @@ int main() {
 
     printf("\n\n\n");printf("\n\n\n");printf("\n\n\n");printf("\n\n\n");
 
-    int x_init = 3;
-    int y_init = 0;
+    int x_init = 4;
+    int y_init = 4;
     t_orientation  orientation_init = NORTH;
 
     displayMap(map);
@@ -134,6 +134,10 @@ int main() {
 
     t_localisation robot_loc = loc_init(x_init, y_init, orientation_init);
     printf("localisation valide : %d\n", isValidLocalisation(robot_loc.pos, map.x_max, map.y_max));
+    move(robot_loc, F_30);
+    printf("localisation valide : %d\n", isValidLocalisation(robot_loc.pos, map.x_max, map.y_max));
+    printf("cout case : %d\n", map.costs[robot_loc.pos.x][robot_loc.pos.y]);
+
     printf("cout case : %d\n", map.costs[x_init][y_init]);
     printf("position a droite valide: %d\n", isValidLocalisation(RIGHT(robot_loc.pos), map.x_max, map.y_max));
     printf("cout case : %d\n", map.costs[RIGHT(robot_loc.pos).x][RIGHT(robot_loc.pos).y]);
@@ -141,5 +145,14 @@ int main() {
 
 
     printf("cout case : %d\n", map.costs[robot_loc.pos.x][robot_loc.pos.y]);
+
+    p_tree cost_case_tree = createCostCasePhaseTree(move_list, map, x_init, y_init, orientation_init);
+
+    printf("\n\n\n");
+    printCostCaseNodeSon(*cost_case_tree->root);
+    printf("\n\n\n");
+    printCostCaseNodeSon(*cost_case_tree->root->sons[0]);
+    printCostCaseNodeSon(*cost_case_tree->root->sons[0]->sons[0]);
+
     return 0;
 }

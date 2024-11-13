@@ -14,6 +14,10 @@ t_node *createNode(t_move move, int nb_sons, int depth) {
     node->move = move;
     node->nbSons = nb_sons;
     node->depth = depth;
+    node->case_cost = 65000;
+    node->localisation = (t_localisation *) malloc(sizeof (t_localisation));
+
+
 
     // Allocation des espaces mémoires nécessaires aux différents tableaux
     node->sons = (t_node **)malloc(nb_sons*sizeof(t_node *));
@@ -140,4 +144,85 @@ void print_indent(int nb) {
     for(int i = 0; i<nb; i++) {
         printf(" ");
     }
+}
+
+void printCostCaseNode(t_node node, int indent) {
+
+    // Si le noeud est la racine
+    if(node.depth == 0) {
+
+        // Affichage de la racine
+        print_indent(indent);
+        printf("[root@]\n");
+
+        // Affichage des éléments visuels
+        print_indent(indent);
+        printf("|\n");
+        print_indent(indent);
+        printf("v\n");
+
+        // Affichage de son mouvement
+        print_indent(indent);
+        printf("[%d]\n", node.move);
+        print_indent(indent);
+        printf("[%s]\n", node.char_move);
+
+        // Affichage de son nombre de fils total
+        print_indent(indent);
+        printf("[%d]\n", node.nbSons);
+
+        // Affichage de son cout de case
+        print_indent(indent);
+        printf("[*%d]\n", node.case_cost);
+
+        // Affichage des mouvements restants
+        if (node.nbSons > 0) {
+            print_indent(indent);
+            displayHList(*node.avails);
+            printf("\n");
+        }
+    }
+
+        // Sinon
+    else {
+
+        // Affichage de son chemin depuis la racine
+        print_indent(indent);
+        printPath(node.path, node.depth);
+        printf("\n");
+
+        // Affichage des éléments visuels
+        print_indent(indent);
+        printf("|");
+        print_indent(indent);
+        printf("\n");
+        print_indent(indent);
+        printf("v");
+        printf("\n");
+
+
+
+        // Affichage de son mouvement
+        print_indent(indent);
+        printf("[%d]\n", node.move);
+        print_indent(indent);
+        printf("[%s]\n", node.char_move);
+
+        // Affichage de son nombre de fils total
+        print_indent(indent);
+        printf("[%d]\n", node.nbSons);
+
+        // Affichage de son cout de case
+        print_indent(indent);
+        printf("[*%d]\n", node.case_cost);
+
+        // Affichage des mouvements restants
+        if (node.nbSons > 0) {
+            print_indent(indent);
+            displayHList(*node.avails);
+            printf("\n");
+        }
+
+    }
+
 }

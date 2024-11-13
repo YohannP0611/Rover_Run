@@ -300,4 +300,4 @@ void displayMap(t_map map)
 
     }
     return;
-}
+}    

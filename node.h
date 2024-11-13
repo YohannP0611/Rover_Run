@@ -11,6 +11,8 @@ typedef struct s_node
 {
     t_move move; //valeur stocké dans le noeud
     char* char_move; // mouvement chaine de caractère
+    int case_cost; // coût de la case sur laquelle on arrive
+    t_localisation* localisation; // localisation du noeud
     int depth; // profondeur du noeud (profondeur du noeud précedent+1)
     struct s_node **sons;
     int nbSons; // taille physique du tableau
@@ -31,6 +33,8 @@ void printPath(p_move path, int depth);
 
 // Fonction pour d'indentation
 void print_indent(int nb);
+
+void printCostCaseNode(t_node node, int indent);
 
 
 #endif //UNTITLED1_NODE_H

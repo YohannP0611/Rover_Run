@@ -4,6 +4,7 @@
 
 #include "tree.h"
 #include "list.h"
+#include "map.h"
 
 #include <time.h>
 
@@ -49,7 +50,7 @@ void addRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails) {
 }
 
 // Fonction qui ajoute un noeud fils à un noeud donné
-void addNode(p_tree tree, p_node node, t_move move) {
+void addNode(p_tree tree, p_node node, t_move number_move) {
 
     // Pour le cas où l'arbre est vide
     if (tree->root == NULL) {
@@ -63,7 +64,7 @@ void addNode(p_tree tree, p_node node, t_move move) {
         if (node->nbSons > 0) {
 
             // Création du nouveau noeud (enfant/fils)
-            p_node new_node = createNode(move, node->nbSons - 1, node->depth + 1);
+            p_node new_node = createNode(number_move, node->nbSons - 1, node->depth + 1);
 
             int j = 0;
 
@@ -80,10 +81,10 @@ void addNode(p_tree tree, p_node node, t_move move) {
                     }
 
                     // Affectation des movements encore disponible (supprime le mouvement qu'on vient d'ajouter)
-                    new_node->avails = removeElt(*node->avails, move);
+                    new_node->avails = removeElt(*node->avails, number_move);
 
 
-                    // Affectation du nouveau mouvement dans le chemin (chemin du parent + move du noeud actuel)
+                    // Affectation du nouveau mouvement dans le chemin (chemin du parent + number_move du noeud actuel)
                     new_node->path[node->depth + 1] = new_node->move;
 
                     // Changement de la profondeur total de l'arbre dans le cas où le nouveau noeud est le plus profond
@@ -324,4 +325,173 @@ void printPhaseNode(t_node node) {
             }
         }
     }
+}
+
+// Fonction pour la création de l'arbre en fonction des mouvements
+p_tree createCostCasePhaseTree(h_std_list* phase_move, t_map map, int x, int y, t_orientation orientation) {
+
+    // Création de l'arbre vide
+    p_tree tree = (p_tree) malloc(sizeof(t_tree));
+    *tree = createEmptyTree();
+
+    // Définition du nombre de noeuds fils de la racine (profondeur de l'arbre)
+    int nbMove = countEltHList(*phase_move);
+
+    // Ajout de la racine
+    addRoot(tree, U_TURN, nbMove, phase_move);
+
+    tree->root->case_cost = 0;
+    *tree->root->localisation = loc_init(x,y,orientation);
+    printf("root valide : %d\n", isValidLocalisation(tree->root->localisation->pos, map.x_max, map.y_max));
+
+    // Appel de la fonction récursive pour la création de tous les noeuds
+    addCostCasePhaseNode(tree, tree->root, map);
+
+    return tree;
+
+}
+
+// Fonction qui ajoute un noeud fils à un noeud donné pour l'arbre de phase
+void addCostCasePhaseNode(p_tree tree, p_node node, t_map map) {
+
+    // Si le noeud n'admet plus de noeud fils
+    if (node->nbSons < 1) {
+        return;
+    }
+
+        // Sinon
+    else {
+
+        // Ajout des noeuds fils en fonction des mouvements restants
+        for (int i = 0; i < node->nbSons; i++) {
+            addCostCaseNode(tree, node, findElt(*node->avails, i), map);
+        }
+
+        // Appel récursif de la fonction pour constuire l'abre entier
+        for (int i = 0; i < node->nbSons; i++) {
+            addCostCasePhaseNode(tree, node->sons[i], map);
+        }
+    }
+}
+
+// Fonction qui ajoute un noeud fils à un noeud donné
+void addCostCaseNode(p_tree tree, p_node node, t_move number_move, t_map map) {
+
+    // Pour le cas où l'arbre est vide
+    if (tree->root == NULL) {
+        printf("Arbre ne contient pas de root\n");
+    }
+
+        // Sinon
+    else {
+
+        // Si le noeud admet des noeuds fils
+        if (node->nbSons > 0) {
+
+            // Création du nouveau noeud (enfant/fils)
+            p_node new_node = createNode(number_move, node->nbSons - 1, node->depth + 1);
+
+            int j = 0;
+
+            // Parcourir le tableau d'adresse vers les noeud enfant
+            while (j < node->nbSons ) {
+
+                // Ajout du nouveau noeud fils dans un "emplacement" libre
+                if (node->sons[j] == NULL) {
+                    node->sons[j] = new_node;
+
+                    // Mise à jour du chemin pour accéder au noeud à partir de la racine de l'arbre
+                    for (int k = 0; k < node->depth + 1; k++) {
+                        new_node->path[k] = node->path[k];
+                    }
+
+                    // Affectation des movements encore disponible (supprime le mouvement qu'on vient d'ajouter)
+                    new_node->avails = removeElt(*node->avails, number_move);
+
+
+                    // Affectation du nouveau mouvement dans le chemin (chemin du parent + number_move du noeud actuel)
+                    new_node->path[node->depth + 1] = new_node->move;
+
+                    // Changement de la profondeur total de l'arbre dans le cas où le nouveau noeud est le plus profond
+                    if(tree->depth < new_node->depth) {
+                        tree->depth = new_node->depth;
+                    }
+
+                    printf("movement : %d\n", (move(*node->localisation, number_move).pos, map.x_max, map.y_max));
+                    printf("Cost : %d\n", map.costs[new_node->localisation->pos.x][new_node->localisation->pos.y]);
+                    printf("valide : %d\n", isValidLocalisation(move(*node->localisation, number_move).pos, map.x_max, map.y_max));
+
+
+                    if (isValidLocalisation(move(*node->localisation, number_move).pos, map.x_max, map.y_max)) {
+                        *new_node->localisation = move(*node->localisation, number_move);
+                        new_node->case_cost = map.costs[new_node->localisation->pos.x][new_node->localisation->pos.y];
+                    }
+                    else {
+                        new_node->case_cost = 600;
+                    }
+
+                    return;
+                }
+                j++;
+            }
+        }
+    }
+}
+
+// Fonction d'affchage pour un noeud et ses enfants
+void printCostCaseNodeSon(t_node node) {
+
+    // Affiche le noeud indenté en fonction de son nombre de fils
+    printCostCaseNode(node, ((node.nbSons * 5 + 7 * (node.nbSons - 1)) / 2) - 1);
+
+
+    // Afficher le n° de chaque noeud fils avec indentation
+    for (int i = 0; i < node.nbSons; i++) {
+        printf("[N%d@]", i+1);
+        //printPath(node.sons[i]->path, node.sons[i]->depth);
+        if (i<node.nbSons-1) {
+            printf("-------");
+        }
+
+    }
+
+
+    printf("\n");
+
+
+    // Affichage prédeterminé de chaque noeud fils avec indentation
+    for (int i = 0; i < node.nbSons; i++) {
+        printf("   |");
+        printf("        ");
+    }
+    printf("\n");
+    for (int i = 0; i < node.nbSons; i++) {
+        printf("   v");
+        printf("        ");
+    }
+    printf("\n");
+
+
+    // Afficher le mouvement de chaque noeud fils avec indentation
+    for (int i = 0; i < node.nbSons; i++) {
+        if (node.sons[i] != NULL) {
+            printf("  [%d]", node.sons[i]->move);
+        } else {
+            printf(" NULL");
+        }
+        printf("       ");
+    }
+    printf("\n");
+
+    // Afficher le mouvement de chaque noeud fils avec indentation
+    for (int i = 0; i < node.nbSons; i++) {
+        if (node.sons[i] != NULL) {
+            printf("  [*%d]", node.sons[i]->case_cost);
+        } else {
+            printf(" NULL");
+        }
+        printf("       ");
+    }
+    printf("\n");
+
 }
