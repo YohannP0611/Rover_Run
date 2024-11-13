@@ -421,11 +421,17 @@ void addCostCaseNode(p_tree tree, p_node node, t_move number_move, t_map map) {
 
 
                     if (isValidLocalisation(move(node->localisation, number_move).pos, map.x_max, map.y_max)) {
-                        printf("Cost : %d\n", map.costs[new_node->localisation.pos.x][new_node->localisation.pos.y]);
+
+                        printPath(new_node->path, new_node->depth);
+
+
                         new_node->localisation = move(node->localisation, number_move);
-                        new_node->case_cost = map.costs[new_node->localisation.pos.x][new_node->localisation.pos.y];
                         printf("x : %d\n", new_node->localisation.pos.x);
                         printf("y : %d\n", new_node->localisation.pos.y);
+                        new_node->case_cost = map.costs[new_node->localisation.pos.x][new_node->localisation.pos.y];
+                        printf("Cost : %d\n", map.costs[new_node->localisation.pos.x][new_node->localisation.pos.y]);
+                        printf("Cost : %d\n", new_node->case_cost);
+
                     }
                     else {
                         printf("x : %d\n", new_node->localisation.pos.x);

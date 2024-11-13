@@ -5,6 +5,9 @@
 
 int main() {
     t_map map = createMapFromFile("..\\maps\\example1.map");
+    printf("x_max : %d\n", map.x_max);
+    printf("y_max : %d\n", map.y_max);
+
     printf("Map created with dimensions %d x %d\n", map.y_max, map.x_max);
     for (int i = 0; i < map.y_max; i++)
     {
@@ -15,11 +18,11 @@ int main() {
         printf("\n");
     }
     // printf the costs, aligned left 5 digits
-    for (int i = 0; i < map.x_max; i++)
+    for (int i = 0; i < map.y_max; i++)
     {
-        for (int j = 0; j < map.y_max; j++)
+        for (int j = 0; j < map.x_max; j++)
         {
-            printf("%-5d ", map.costs[j][i]);
+            printf("%-5d ", map.costs[i][j]);
         }
         printf("\n");
     }
