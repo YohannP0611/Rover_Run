@@ -78,4 +78,6 @@ void calculateCosts(t_map);
  */
 void removeFalseCrevasses(t_map);
 
+void createRandomMap(char *filename, int ydim, int xdim);
+
 #endif //UNTITLED1_MAP_H

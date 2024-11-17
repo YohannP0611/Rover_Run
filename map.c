@@ -8,6 +8,7 @@
 #include "map.h"
 #include "loc.h"
 #include "queue.h"
+#include <time.h>
 
 
 /* definition of local functions */
@@ -237,7 +238,7 @@ void displayMap(t_map map)
      */
     for (int i = 0; i < map.y_max; i++)
     {
-        for (int rep = 0; rep < 3; rep++)
+        for (int rep = 0; rep < 2; rep++)
         {
             for (int j = 0; j < map.x_max; j++)
             {
@@ -277,4 +278,53 @@ void displayMap(t_map map)
 
     }
     return;
-}    
+}
+
+void createRandomMap(char *filename, int ydim, int xdim) {
+
+    // Tableau des valeurs possibles pour les cases
+    int values[] = {PLAIN, ERG, REG, CREVASSE};
+    int num_values = sizeof(values) / sizeof(values[0]);
+
+    // Initialisation du générateur de nombres aléatoires
+    srand(time(NULL));
+
+    int x = rand() % xdim;
+    printf("%d", x);
+    int y = rand() % ydim;
+    printf("%d", y);
+
+    // Ouverture du fichier en écriture
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        fprintf(stderr, "Error: cannot create file %s\n", filename);
+        exit(1);
+    }
+
+    // Écriture des dimensions de la carte
+    fprintf(file, "%d\n", ydim);
+    fprintf(file, "%d\n", xdim);
+
+    // Génération aléatoire des cases de la carte
+    for (int i = 0; i < ydim; i++) {
+        for (int j = 0; j < xdim; j++) {
+            int value;
+            if (i != y || x != j) {
+                value = values[rand() % num_values];
+            }
+            else {
+                value = 0;
+            }
+            fprintf(file, "%d", value);
+            if (j < xdim - 1) {
+                fprintf(file, " "); // Ajouter un espace sauf à la fin de la ligne
+            }
+        }
+        fprintf(file, "\n");
+    }
+
+    // Fermeture du fichier
+    fclose(file);
+    printf("Map successfully created in file: %s\n", filename);
+
+}

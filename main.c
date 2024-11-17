@@ -8,11 +8,13 @@ int main() {
 
     t_map map;
 
+    createRandomMap("..\\maps\\example2.map", 10, 9);
+
     // The following preprocessor directive checks if the code is being compiled on a Windows system.
     // If either _WIN32 or _WIN64 is defined, it means we are on a Windows platform.
     // On Windows, file paths use backslashes (\), hence we use the appropriate file path for Windows.
 #if defined(_WIN32) || defined(_WIN64)
-    map = createMapFromFile("..\\maps\\example1.map");
+    map = createMapFromFile("..\\maps\\example2.map");
 #else
     map = createMapFromFile("../maps/example1.map");
 #endif
@@ -158,7 +160,6 @@ int main() {
 
         printf("Début de la phase...\n\n\n");
 
-        int continuer = 0;
         while (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
 
             h_std_list* move_list = createListEmpty();
@@ -198,8 +199,6 @@ int main() {
             }
 
             if (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
-                printf("Continuer ?");
-                scanf(" %d", &continuer);
                 printf("\n\n\n");
             }
 
