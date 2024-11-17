@@ -419,7 +419,11 @@ void addFullNode(p_tree tree, p_node node, t_move number_move, t_map map, int ma
 
                         // Le nouveau noeud prend la localisation après mouvement
                         new_node->localisation = move(node->localisation, number_move);
-                        new_node->case_cost = map.costs[new_node->localisation.pos.x][new_node->localisation.pos.y];
+                        new_node->case_cost = map.costs[new_node->localisation.pos.y][new_node->localisation.pos.x];
+
+                        if(new_node->case_cost == 0) {
+                            new_node->nbSons = 0;
+                        }
 
                     }
                     else {
@@ -427,8 +431,6 @@ void addFullNode(p_tree tree, p_node node, t_move number_move, t_map map, int ma
                         new_node->case_cost = 13000;
                     }
 
-                    printFullNode(*new_node, 10);
-                    printf("\n\n\n");
                     return;
                 }
                 j++;
@@ -513,7 +515,7 @@ void addFullRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails, t_loca
         // Affecter la localisation
         tree->root->localisation = localisation;
 
-        tree->root->case_cost = map.costs[tree->root->localisation.pos.x][tree->root->localisation.pos.y];
+        tree->root->case_cost = map.costs[tree->root->localisation.pos.y][tree->root->localisation.pos.x];
 
         // Affecter la profonceur (profondeur de la racie est de 0)
         tree->depth = 0;
@@ -532,7 +534,6 @@ p_node searchBetterPathNode(t_tree tree) {
     // Parcourir jusqu'à atteindre une feuille
     while (node != searchBetterNode(node)) {
         node = searchBetterNode(node);  // Aller au nœud avec le coût minimal
-
     }
     return node;
 }

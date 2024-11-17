@@ -43,9 +43,9 @@ int main() {
     printf("%d", map.costs[0][5]);
 
 
-    int running = 1;
+    int running = 0;
 
-    if (running == 1) {
+
 
         printf("\n\n\n");
 
@@ -121,6 +121,8 @@ int main() {
 
         t_localisation root_loc = loc_init(x_init, y_init, orientation_init);
 
+    if (running == 1) {
+
 
         char guidage;
 
@@ -149,7 +151,59 @@ int main() {
     }
 
     while (running == 0) {
+
+
+        printf("Début de la phase...\n");
+
+        int continuer = 0;
+        while (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
+
+            printf("Point de départ du robot au début de la phase :\n\tx : %d\n\ty : %d\n", robot_loc.pos.x, robot_loc.pos.y);
+            printf("Orientation : %s\n", getOrientationAsString(robot_loc.ori));
+
+            printf("Coordonée de la base :\n\tx : %d\n\ty : %d\n", base_station_loc.x, base_station_loc.y);
+
+
+            p_tree ptr_phase_tree = createFullTreePhase(move_list, map, robot_loc, nbMoveSelect);
+
+            printf("Continuer ?");
+            scanf(" %d", &continuer);
+
+
+
+
+            p_node node = searchBetterPathNode(*ptr_phase_tree);
+
+            if (node->case_cost > 12999) {
+                printf("Aucun chemin ne mène à la base (perte de signal du robot ou destruction de celui-ci");
+            }
+            else {
+                printf("Le chemin le moins couteux est : ");
+                printPath(*node);
+                printFullNode(*node, 10);
+
+                printf("\n\nSoit la suite de mouvement : [");
+                for(int i = 0; i < node->depth; i++) {
+                    printf("%s - ", getMoveAsString(node->path[i]));
+                }
+                printf("%s]\n\n\n", getMoveAsString(node->path[node->depth]));
+
+                robot_loc = loc_init(node->localisation.pos.x, node->localisation.pos.y, node->localisation.ori);
+            }
+
+
+            printf("%d\n", robot_loc.pos.x == base_station_loc.x && robot_loc.pos.y == base_station_loc.y);
+
+
+            printf("%d %d\n", robot_loc.pos.x, robot_loc.pos.y);
+
+            printf("%d %d", base_station_loc.x, base_station_loc.y);
+
+        }
+
         displayMap(map);
+
+        running = -1;
 
     }
     return 0;
