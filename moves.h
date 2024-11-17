@@ -24,7 +24,7 @@ typedef enum e_move
     B_10, // Backward 10 m
     T_LEFT, // Turn left (+90°)
     T_RIGHT, // Turn right (-90°)
-    U_TURN
+    U_TURN // Faire demi-tour
 } t_move, *p_move;
 
 typedef struct {

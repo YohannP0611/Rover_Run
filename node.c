@@ -203,21 +203,29 @@ void printFullNode(t_node node, int indent) {
 
         // Affichage de son mouvement
         print_indent(indent);
-        printf("[%d]\n", node.move);
+        printf("[nbMove : %d]\n", node.move);
         print_indent(indent);
         printf("[%s]\n", node.char_move);
 
         // Affichage de son nombre de fils total
         print_indent(indent);
-        printf("[%d]\n", node.nbSons);
+        printf("[nbSons : %d]\n", node.nbSons);
 
         // Affichage de son cout de case
         print_indent(indent);
-        printf("[depth : %d]\n", node.depth);
+        printf("{depth : %d}\n", node.depth);
 
         // Affichage de son cout de case
         print_indent(indent);
         printf("[*%d]\n", node.case_cost);
+
+        // Affichage coordonée x
+        print_indent(indent);
+        printf("/x : %d\\\n", node.localisation.pos.x);
+
+        // Affichage coordonée y
+        print_indent(indent);
+        printf("\\y : %d/\n", node.localisation.pos.y);
 
         // Affichage des mouvements restants
         if (node.nbSons > 0) {

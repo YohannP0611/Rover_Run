@@ -426,6 +426,9 @@ void addFullNode(p_tree tree, p_node node, t_move number_move, t_map map, int ma
                         new_node->nbSons = 0;
                         new_node->case_cost = 13000;
                     }
+
+                    printFullNode(*new_node, 10);
+                    printf("\n\n\n");
                     return;
                 }
                 j++;
