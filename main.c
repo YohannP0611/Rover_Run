@@ -133,7 +133,7 @@ int main() {
         scanf(" %c", &guidage);
         printf("\n");
         if (guidage == 'Y') {
-            p_tree ptr_phase_tree = createFullTreePhase(move_list, map, robot_loc, nbMoveSelect);
+            p_tree ptr_phase_tree = createTree(move_list, map, robot_loc, nbMoveSelect);
             printf("Le chemin le moins couteux est : ");
 
             p_node node = searchBetterPathNode(*ptr_phase_tree);
@@ -176,7 +176,7 @@ int main() {
             printf("Coordonees de la base :\n\tx : %d\n\ty : %d\n\n", base_station_loc.x, base_station_loc.y);
 
 
-            p_tree ptr_phase_tree = createFullTreePhase(move_list, map, robot_loc, nbMoveSelect);
+            p_tree ptr_phase_tree = createTree(move_list, map, robot_loc, nbMoveSelect);
 
             p_node node = searchBetterPathNode(*ptr_phase_tree);
 

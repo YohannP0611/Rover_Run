@@ -23,48 +23,33 @@ t_tree createEmptyTree();
 // Supprimer un arbre (pas encore terminée)
 void deleteTree(p_tree tree);
 
-// Ajoute une racine à un arbre vide
-void addRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails);
-
-// Fonction qui ajoute un noeud fils à un noeud donné
-void addNode(p_tree tree, p_node node, t_move number_move);
-
 // Fonction qui retourne l'adresse d'un noeud à partir de son chemin et sa profondeur (pas encore terminée)
 p_node findNode( t_tree tree, p_move path, int depth);
 
 // Fonction d'affchage pour un noeud et ses enfants
 void printNodeSon(t_node node);
 
-// Fonction d'affichae d'un rang de l'abre avec profondeur donnée (pas encore finie)
-void printTreeDepthNode(t_tree tree, int depth);
-
 // Fonction de calcul de puissance
 int puissance(int x, int y);
 
+// Fonction qui ajoute un noeud fils à un noeud donné (version la plus avancée, prenant en charge le coût des cases)
+void addNode(p_tree tree, p_node node, t_move number_move, t_map map, int max_depth);
+
+// Fonction qui ajoute un noeud fils à un noeud donné pour l'arbre de phase
+void addNodeRec(p_tree tree, p_node node, t_map map, int max_depth);
+
 // Fonction pour la création de l'arbre en fonction des mouvements
-p_tree createPhaseTree(h_std_list* phase_move);
+p_tree createTree(h_std_list* phase_move, t_map map, t_localisation loc, int max_depth);
 
-// Fonction qui ajoute un noeud fils à un noeud donné pour l'arbre de phase
-void addPhaseNode(p_tree tree, p_node node);
+// Fonction d'affchage pour un noeud et ses enfants (incluant plus de détails)
+void printNodeSonV2(t_node node);
 
-// Fonction d'affichage des noeuds de l'arbre de Phase
-void printPhaseTree(t_tree tree);
-
-// Fonction qui ajoute un noeud fils à un noeud donné pour l'arbre de phase
-void printPhaseNode(t_node node);
-
-void addFullNode(p_tree tree, p_node node, t_move number_move, t_map map, int max_depth);
-
-void addFullNodePhase(p_tree tree, p_node node, t_map map, int max_depth);
-
-p_tree createFullTreePhase(h_std_list* phase_move, t_map map, t_localisation loc, int max_depth);
-
-void printFullNodeSon(t_node node);
-
-void addFullRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails, t_localisation localisation, t_map map);
+// Ajoute une racine à un arbre
+void addRoot(p_tree tree, t_move move, int nbSon, h_std_list* avails, t_localisation localisation, t_map map);
 
 p_node searchBetterNode(p_node node);
 
+// Recherche le chemin avec le moins de point et renvoie le dernier noeud de celui-ci
 p_node searchBetterPathNode(t_tree tree);
 
 #endif //UNTITLED1_TREE_H
