@@ -20,6 +20,11 @@ typedef enum e_soil
     CREVASSE
 } t_soil;
 
+typedef struct {
+ int element;
+ double percentage;  // Le pourcentage de probabilité de l'élément
+} tabSoils;
+
 /**
  * @brief Array of costs for the soils
  */
@@ -79,5 +84,7 @@ void calculateCosts(t_map);
 void removeFalseCrevasses(t_map);
 
 void createRandomMap(char *filename, int ydim, int xdim);
+
+enum e_soil selectRandomSoils(tabSoils soils[], int size);
 
 #endif //UNTITLED1_MAP_H

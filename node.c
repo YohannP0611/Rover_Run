@@ -145,7 +145,7 @@ void print_indent(int nb) {
     }
 }
 
-void printFullNode(t_node node, int indent) {
+void printNodeV2(t_node node, int indent) {
 
     // Si le noeud est la racine
     if(node.depth == 0) {

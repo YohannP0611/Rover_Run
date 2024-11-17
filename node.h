@@ -34,7 +34,7 @@ void printPath(t_node node);
 // Fonction pour d'indentation
 void print_indent(int nb);
 
-void printFullNode(t_node node, int indent);
+void printNodeV2(t_node node, int indent);
 
 
 #endif //UNTITLED1_NODE_H

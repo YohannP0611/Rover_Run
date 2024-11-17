@@ -8,13 +8,14 @@ int main() {
 
     t_map map;
 
-    createRandomMap("..\\maps\\example2.map", 10, 9);
+    // Fonction pour créer une carte aléatoirement (peut faire crash le programme de temps en temps)
+    createRandomMap("..\\maps\\example2.map", randomNumber(7, 16), randomNumber(6, 15));
 
     // The following preprocessor directive checks if the code is being compiled on a Windows system.
     // If either _WIN32 or _WIN64 is defined, it means we are on a Windows platform.
     // On Windows, file paths use backslashes (\), hence we use the appropriate file path for Windows.
 #if defined(_WIN32) || defined(_WIN64)
-    map = createMapFromFile("..\\maps\\example2.map");
+    map = createMapFromFile("..\\maps\\example1.map");
 #else
     map = createMapFromFile("../maps/example1.map");
 #endif
@@ -38,12 +39,6 @@ int main() {
         printf("\n");
     }
     displayMap(map);
-
-    printf("x_max : %d\n", map.x_max);
-    printf("y_max : %d\n", map.y_max);
-
-    printf("%d", map.costs[0][5]);
-
 
     int running = 0;
 
@@ -92,9 +87,6 @@ int main() {
 
         // Définition des coordonnées de base du robot
         t_localisation robot_loc = loc_init(x_init, y_init, orientation_init);
-        printf("robot x : %d\n", robot_loc.pos.x);
-        printf("robot y : %d\n", robot_loc.pos.y);
-        printf("robot orientation : %s\n", getOrientationAsString(robot_loc.ori));
 
 
 
@@ -158,9 +150,14 @@ int main() {
     while (running == 0) {
 
 
-        printf("Début de la phase...\n\n\n");
+        printf("Debut de la phase...\n\n\n");
 
         while (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
+
+            printf("Orientation : %s\n", getOrientationAsString(robot_loc.ori));
+            printf("Point de depart du robot au debut de la phase :\n\tx : %d\n\ty : %d\n\n", robot_loc.pos.x, robot_loc.pos.y);
+
+            printf("Coordonees de la base :\n\tx : %d\n\ty : %d\n\n", base_station_loc.x, base_station_loc.y);
 
             h_std_list* move_list = createListEmpty();
 
@@ -171,23 +168,21 @@ int main() {
                 printf("Element selectionne : %d\n", selected);
             }
 
-            printf("Point de départ du robot au début de la phase :\n\tx : %d\n\ty : %d\n\n", robot_loc.pos.x, robot_loc.pos.y);
-            printf("Orientation : %s\n", getOrientationAsString(robot_loc.ori));
 
-            printf("Coordonees de la base :\n\tx : %d\n\ty : %d\n\n", base_station_loc.x, base_station_loc.y);
-
+            printf("\n\n");
 
             p_tree ptr_phase_tree = createTree(move_list, map, robot_loc, nbMoveSelect);
 
             p_node node = searchBetterPathNode(*ptr_phase_tree);
 
             if (node->case_cost > 12999) {
-                printf("Aucun chemin ne mène à la base (perte de signal du robot ou destruction de celui-ci\n");
+                printf("Aucun chemin ne mene a la base (perte de signal du robot ou destruction de celui-ci\n");
             }
             else {
                 printf("Le chemin le moins couteux est : ");
                 printPath(*node);
-                printFullNode(*node, 10);
+                printf("\n\n");
+                printNodeSonV2(*node);
 
                 printf("\n\nSoit la suite de mouvement : [");
                 for(int i = 0; i < node->depth; i++) {
@@ -199,10 +194,8 @@ int main() {
             }
 
             if (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
-                printf("\n\n\n");
+                printf("----------------------------------------------------------------\n\n\n");
             }
-
-
 
         }
 

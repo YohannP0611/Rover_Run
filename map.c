@@ -11,6 +11,8 @@
 #include <time.h>
 
 
+
+
 /* definition of local functions */
 
 t_position getBaseStationPosition(t_map map)
@@ -282,17 +284,16 @@ void displayMap(t_map map)
 
 void createRandomMap(char *filename, int ydim, int xdim) {
 
-    // Tableau des valeurs possibles pour les cases
-    int values[] = {PLAIN, ERG, REG, CREVASSE};
-    int num_values = sizeof(values) / sizeof(values[0]);
+    // Exemple de tableau d'éléments avec leurs pourcentages initiaux
+    tabSoils item_soils[] = {
+        {PLAIN, 40.0},
+        {ERG, 20.0},
+        {REG, 30.0},
+        {CREVASSE, 5.0},
+        {BASE_STATION, 5.0}
+    };
 
-    // Initialisation du générateur de nombres aléatoires
     srand(time(NULL));
-
-    int x = rand() % xdim;
-    printf("%d", x);
-    int y = rand() % ydim;
-    printf("%d", y);
 
     // Ouverture du fichier en écriture
     FILE *file = fopen(filename, "w");
@@ -309,12 +310,18 @@ void createRandomMap(char *filename, int ydim, int xdim) {
     for (int i = 0; i < ydim; i++) {
         for (int j = 0; j < xdim; j++) {
             int value;
-            if (i != y || x != j) {
-                value = values[rand() % num_values];
-            }
-            else {
+
+            // Si la base n'est pas encore sorti à la fin de la génération de la carte
+            if (item_soils[4].percentage != 0 && i == ydim - 1 && j == xdim - 1) {
                 value = 0;
             }
+            else {
+                value = selectRandomSoils(item_soils, 5);
+                if (value == 0) {
+                    item_soils[4].percentage = 0.0;
+                }
+            }
+
             fprintf(file, "%d", value);
             if (j < xdim - 1) {
                 fprintf(file, " "); // Ajouter un espace sauf à la fin de la ligne
@@ -327,4 +334,29 @@ void createRandomMap(char *filename, int ydim, int xdim) {
     fclose(file);
     printf("Map successfully created in file: %s\n", filename);
 
+}
+
+// Fonction pour sélectionner un élément en fonction des pourcentages
+t_soil selectRandomSoils(tabSoils soils[], int size) {
+
+    double sum = 0.0;
+
+    // Calcul le pourcentage total des éléments
+    for (int i = 0; i < size; i++) {
+        sum += soils[i].percentage;
+    }
+
+    // Générer un nombre aléatoire entre 0 et la somme des pourcentages
+    double random = (double)rand() / RAND_MAX * sum;
+
+    // Sélection de l'élément
+    double cumulative = 0.0;
+    for (int i = 0; i < size; i++) {
+        cumulative += soils[i].percentage;
+        if (random <= cumulative) {
+            return soils[i].element;
+        }
+    }
+
+    return -1; // Retourne -1 si aucun élément n'est sélectionné (ne devrait pas arriver)
 }

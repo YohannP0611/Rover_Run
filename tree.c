@@ -245,7 +245,7 @@ void addNode(p_tree tree, p_node node, t_move number_move, t_map map, int max_de
 void printNodeSonV2(t_node node) {
 
     // Affiche le noeud indenté en fonction de son nombre de fils
-    printFullNode(node, ((node.nbSons * 5 + 7 * (node.nbSons - 1)) / 2) - 1);
+    printNodeV2(node, ((node.nbSons * 5 + 7 * (node.nbSons - 1)) / 2) - 1);
 
 
     // Afficher le n° de chaque noeud fils avec indentation
