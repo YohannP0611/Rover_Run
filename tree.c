@@ -338,7 +338,7 @@ p_tree createFullTreePhase(h_std_list* phase_move, t_map map, t_localisation loc
     int nbMove = countEltHList(*phase_move);
 
     // Ajout de la racine
-    addFullRoot(tree, U_TURN, nbMove, phase_move, loc, map);
+    addFullRoot(tree, ROOT, nbMove, phase_move, loc, map);
 
     // Appel de la fonction récursive pour la création de tous les noeuds
     addFullNodePhase(tree, tree->root, map, max_depth);

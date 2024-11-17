@@ -56,15 +56,16 @@ int main() {
 
         // Exemple de tableau d'éléments avec leurs pourcentages initiaux
         tabMove items[] = {
-            {F_10, 30.0},
-            {F_20, 25.0},
+            {F_10, 20.0},
+            {F_20, 15.0},
             {F_30, 20.0},
             {B_10, 15.0},
             {T_RIGHT, 10.0},
-            {T_LEFT, 10.0}
+            {T_LEFT, 10.0},
+            {U_TURN, 10.0}
         };
         // Nombre de mouvements au total
-        int nbMove = 6;
+        int nbMove = 7;
 
         // Nombre de mouvements tiré
         int nbMaxMove = 5;
@@ -78,14 +79,7 @@ int main() {
         printf("Nombre de mouvement disponible dans une phase :");
         scanf(" %d", &nbMoveSelect);
 
-        h_std_list* move_list = createListEmpty();
 
-        // Sélectionner n éléments
-        for (int i = 0; i < nbMaxMove; i++) {
-            t_move selected = selectRandomMove(items, nbMove);
-            addTailList(move_list, selected);
-            printf("Element selectionne : %d\n", selected);
-        }
 
         printf("\n\n\n");
 
@@ -123,6 +117,15 @@ int main() {
 
     if (running == 1) {
 
+        h_std_list* move_list = createListEmpty();
+
+        // Sélectionner n éléments
+        for (int i = 0; i < nbMaxMove; i++) {
+            t_move selected = selectRandomMove(items, nbMove);
+            addTailList(move_list, selected);
+            printf("Element selectionne : %d\n", selected);
+        }
+
 
         char guidage;
 
@@ -153,29 +156,32 @@ int main() {
     while (running == 0) {
 
 
-        printf("Début de la phase...\n");
+        printf("Début de la phase...\n\n\n");
 
         int continuer = 0;
         while (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
 
-            printf("Point de départ du robot au début de la phase :\n\tx : %d\n\ty : %d\n", robot_loc.pos.x, robot_loc.pos.y);
+            h_std_list* move_list = createListEmpty();
+
+            // Sélectionner n éléments
+            for (int i = 0; i < nbMaxMove; i++) {
+                t_move selected = selectRandomMove(items, nbMove);
+                addTailList(move_list, selected);
+                printf("Element selectionne : %d\n", selected);
+            }
+
+            printf("Point de départ du robot au début de la phase :\n\tx : %d\n\ty : %d\n\n", robot_loc.pos.x, robot_loc.pos.y);
             printf("Orientation : %s\n", getOrientationAsString(robot_loc.ori));
 
-            printf("Coordonée de la base :\n\tx : %d\n\ty : %d\n", base_station_loc.x, base_station_loc.y);
+            printf("Coordonees de la base :\n\tx : %d\n\ty : %d\n\n", base_station_loc.x, base_station_loc.y);
 
 
             p_tree ptr_phase_tree = createFullTreePhase(move_list, map, robot_loc, nbMoveSelect);
 
-            printf("Continuer ?");
-            scanf(" %d", &continuer);
-
-
-
-
             p_node node = searchBetterPathNode(*ptr_phase_tree);
 
             if (node->case_cost > 12999) {
-                printf("Aucun chemin ne mène à la base (perte de signal du robot ou destruction de celui-ci");
+                printf("Aucun chemin ne mène à la base (perte de signal du robot ou destruction de celui-ci\n");
             }
             else {
                 printf("Le chemin le moins couteux est : ");
@@ -191,13 +197,13 @@ int main() {
                 robot_loc = loc_init(node->localisation.pos.x, node->localisation.pos.y, node->localisation.ori);
             }
 
+            if (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
+                printf("Continuer ?");
+                scanf(" %d", &continuer);
+                printf("\n\n\n");
+            }
 
-            printf("%d\n", robot_loc.pos.x == base_station_loc.x && robot_loc.pos.y == base_station_loc.y);
 
-
-            printf("%d %d\n", robot_loc.pos.x, robot_loc.pos.y);
-
-            printf("%d %d", base_station_loc.x, base_station_loc.y);
 
         }
 
