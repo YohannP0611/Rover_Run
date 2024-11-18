@@ -120,7 +120,7 @@ int puissance(int x, int y) {
     return resultat;
 }
 
-// Fonction pour la création de l'arbre en fonction des mouvements
+// Fonction pour la création de l'arbre en fonction des mouvements (Méthode 1)
 p_tree createTree(h_std_list* phase_move, t_map map, t_localisation loc, int max_depth) {
 
     // Création de l'arbre vide
@@ -170,7 +170,7 @@ void addNodeRec(p_tree tree, p_node node, t_map map, int max_depth) {
     }
 }
 
-// Fonction qui ajoute un noeud fils à un noeud donné (version la plus avancée, prenant en charge le coût des cases)
+// Fonction qui ajoute un noeud fils à un noeud donné (version la plus avancée, prenant en charge le coût des cases) (Méthode 1)
 void addNode(p_tree tree, p_node node, t_move number_move, t_map map, int max_depth) {
 
     // Pour le cas où l'arbre est vide
@@ -383,4 +383,149 @@ p_node searchBetterNode(p_node node) {
     // Si aucun noeud enfant n'est trouvé renvoyer le noeud actuel
     return (node_min != NULL) ? node_min : node;
 
+}
+
+// Fonction pour la création de l'arbre en fonction des mouvements (Méthode 2)
+p_tree createTreeV2(h_std_list* phase_move, t_map map, t_localisation loc, int max_depth) {
+
+    // Création de l'arbre vide
+    p_tree tree = (p_tree) malloc(sizeof(t_tree));
+    *tree = createEmptyTree();
+
+    // Définition du nombre de noeuds fils de la racine (profondeur de l'arbre)
+    int nbMove = 1;
+
+    // Ajout de la racine
+    addRoot(tree, ROOT, nbMove, phase_move, loc, map);
+
+    // Appel de la fonction récursive pour la création de tous les noeuds
+    addNodeRecV2(tree, tree->root, map, max_depth);
+
+    return tree;
+
+}
+
+// Fonction qui ajoute un noeud fils à un noeud donné pour l'arbre de phase (Méthode 2)
+void addNodeRecV2(p_tree tree, p_node node, t_map map, int max_depth) {
+
+    // Si le noeud n'admet plus de noeud fils
+    if (node->nbSons < 1) {
+        return;
+    }
+
+        // Sinon
+    else {
+
+        if (node->depth < max_depth) {
+
+            // Stocker le mouvement corespondant au minimum de point
+            t_move min_move;
+
+            // Stocker le coût de la case la plus petite
+            int min_case_cost = 65000;
+
+            // Ajout des noeuds fils en fonction du mouvement le plus intéressant
+            for (int i = 0; i < node->nbSons; i++) {
+
+                // Trouver le mouvement qui mène à la case la moins chère
+                if (map.costs[move(node->localisation, findElt(*node->avails, i)).pos.y][move(node->localisation, findElt(*node->avails, i)).pos.x] < min_case_cost) {
+                    min_case_cost = map.costs[move(node->localisation, findElt(*node->avails, i)).pos.y][move(node->localisation, findElt(*node->avails, i)).pos.x];
+                    min_move = findElt(*node->avails, i);
+                }
+            }
+
+
+            // Ajout du noeud le plus intéressant
+            addNodeV2(tree, node, min_move, map, max_depth);
+
+
+            // Appel récursif de la fonction pour constuire l'abre entier
+            for (int i = 0; i < max_depth; i++) {
+
+                addNodeRecV2(tree, node->sons[0], map, max_depth);
+
+            }
+        }
+    }
+}
+
+// Fonction qui ajoute un noeud fils à un noeud donné (version la plus avancée, prenant en charge le coût des cases) (Méthode 2)
+void addNodeV2(p_tree tree, p_node node, t_move number_move, t_map map, int max_depth) {
+
+    // Pour le cas où l'arbre est vide
+    if (tree->root == NULL) {
+        printf("Arbre ne contient pas de root\n");
+    }
+
+        // Sinon
+    else {
+
+        // Si le noeud admet des noeuds fils
+        if (node->nbSons > 0) {
+
+            // Création du nouveau noeud (enfant/fils)
+            p_node new_node = createNode(number_move, node->nbSons, node->depth + 1);
+
+            int j = 0;
+
+            // Parcourir le tableau d'adresse vers les noeud enfant
+            while (j < node->nbSons ) {
+
+                // Ajout du nouveau noeud fils dans un "emplacement" libre
+                if (node->sons[j] == NULL) {
+                    node->sons[j] = new_node;
+
+                    // Mise à jour du chemin pour accéder au noeud à partir de la racine de l'arbre
+                    for (int k = 0; k < node->depth + 1; k++) {
+                        new_node->path[k] = node->path[k];
+                    }
+
+                    // Affectation des movements encore disponible (supprime le mouvement qu'on vient d'ajouter)
+                    new_node->avails = removeElt(*node->avails, number_move);
+
+
+                    // Affectation du nouveau mouvement dans le chemin (chemin du parent + number_move du noeud actuel)
+                    new_node->path[node->depth + 1] = new_node->move;
+
+                    // Changement de la profondeur total de l'arbre dans le cas où le nouveau noeud est le plus profond
+                    if(tree->depth < new_node->depth) {
+                        tree->depth = new_node->depth;
+                    }
+
+                    // Si la nouvelle localisation appartient à la map
+                    if (isValidLocalisation(move(node->localisation, number_move).pos, map.x_max, map.y_max)) {
+
+                        // Le nouveau noeud prend la localisation après mouvement
+                        new_node->localisation = move(node->localisation, number_move);
+                        new_node->case_cost = map.costs[new_node->localisation.pos.y][new_node->localisation.pos.x];
+
+                        // Si le noeud correspond à la case de la base alors ce noeud devient une feuille
+                        if(new_node->case_cost == 0) {
+                            new_node->nbSons = 0;
+                        }
+
+                    }
+
+                        // Sinon le noeud devient une feuille avec une case de valeur 13000 (coût d'une case interdite)
+                    else {
+                        new_node->nbSons = 0;
+                        new_node->case_cost = 13000;
+                    }
+
+                    return;
+                }
+                j++;
+            }
+        }
+    }
+}
+
+void printTree(t_tree tree) {
+
+    p_node node = tree.root;
+
+    while (node != NULL) {
+        printNode(*node, 10);
+        node = node->sons[node->nbSons];
+    }
 }

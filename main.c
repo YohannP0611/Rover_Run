@@ -107,7 +107,11 @@ int main() {
 
         printf("\n\n\n");
 
+        t_localisation root_loc_auto = loc_init(x_init, y_init, orientation_init);
+
         t_localisation root_loc = loc_init(x_init, y_init, orientation_init);
+
+
 
     if (running == 1) {
 
@@ -121,27 +125,7 @@ int main() {
         }
 
 
-        char guidage;
 
-        printf("\n\n\n\nActiver le système de guidage automatique ? [Y/n] : ");
-        scanf(" %c", &guidage);
-        printf("\n");
-        if (guidage == 'Y') {
-            p_tree ptr_phase_tree = createTree(move_list, map, robot_loc, nbMoveSelect);
-            printf("Le chemin le moins couteux est : ");
-
-            p_node node = searchBetterPathNode(*ptr_phase_tree);
-            printPath(*node);
-
-            printf("\n\nSoit la suite de mouvement : [");
-            for(int i = 0; i < node->depth; i++) {
-                printf("%s - ", getMoveAsString(node->path[i]));
-            }
-            printf("%s]\n\n\n", getMoveAsString(node->path[node->depth]));
-        }
-        else {
-            printf("Activation échouée... ");
-        }
 
 
 
@@ -149,17 +133,17 @@ int main() {
 
     while (running == 0) {
 
-
-        printf("Debut de la phase...\n\n\n");
-
         while (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
 
+            printf("Debut de la phase...\n\n\n");
+
             printf("Orientation : %s\n", getOrientationAsString(robot_loc.ori));
-            printf("Point de depart du robot au debut de la phase :\n\tx : %d\n\ty : %d\n\n", robot_loc.pos.x, robot_loc.pos.y);
+            printf("Point de depart du robot au debut de la phase :\n\tx : %d\n\ty : %d\n\n", robot_loc.pos.x,
+                   robot_loc.pos.y);
 
             printf("Coordonees de la base :\n\tx : %d\n\ty : %d\n\n", base_station_loc.x, base_station_loc.y);
 
-            h_std_list* move_list = createListEmpty();
+            h_std_list *move_list = createListEmpty();
 
             // Sélectionner n éléments
             for (int i = 0; i < nbMaxMove; i++) {
@@ -168,36 +152,110 @@ int main() {
                 printf("Element selectionne : %d\n", selected);
             }
 
+            char guidage;
 
-            printf("\n\n");
+            printf("\n\n\n\nActiver le systeme de guidage automatique ? [Y/n] : ");
+            scanf(" %c", &guidage);
+            printf("\n");
 
-            p_tree ptr_phase_tree = createTree(move_list, map, robot_loc, nbMoveSelect);
+            if (guidage == 'Y') {
 
-            p_node node = searchBetterPathNode(*ptr_phase_tree);
+                // Création de l'arbre de phase (Méthode 1)
+                p_tree ptr_phase_tree_auto = createTree(move_list, map, robot_loc, nbMoveSelect);
 
-            if (node->case_cost > 12999) {
-                printf("Aucun chemin ne mene a la base (perte de signal du robot ou destruction de celui-ci\n");
-            }
-            else {
-                printf("Le chemin le moins couteux est : ");
-                printPath(*node);
-                printf("\n\n");
-                printNodeSonV2(*node);
+                //p_tree ptr_phase_tree_auto = createTreeV2(move_list, map, robot_loc, nbMoveSelect);
 
-                printf("\n\nSoit la suite de mouvement : [");
-                for(int i = 0; i < node->depth; i++) {
-                    printf("%s - ", getMoveAsString(node->path[i]));
+                // Détermination du noeud avec le chemin le moins coûteux
+                p_node node = searchBetterPathNode(*ptr_phase_tree_auto);
+
+
+                if (node->case_cost > 12999) {
+                    printf("Aucun chemin ne mene a la base (perte de signal du robot ou destruction de celui-ci\n");
+                } else {
+                    printf("Le chemin le moins couteux est : ");
+
+                    // Affichage du chemin
+                    printPath(*node);
+
+                    printf("\n\n");
+                    printNodeSonV2(*node);
+
+                    // Affichage de la suite de mouvement correspondante
+                    printf("\n\nSoit la suite de mouvement : [");
+                    for (int i = 0; i < node->depth; i++) {
+                        printf("%s - ", getMoveAsString(node->path[i]));
+                    }
+                    printf("%s]\n\n\n", getMoveAsString(node->path[node->depth]));
+
+                    // Affectation des nouvelles coordonnées pour le robot (coordonnées de la case de fin de phase)
+                    robot_loc = loc_init(node->localisation.pos.x, node->localisation.pos.y, node->localisation.ori);
                 }
-                printf("%s]\n\n\n", getMoveAsString(node->path[node->depth]));
 
-                robot_loc = loc_init(node->localisation.pos.x, node->localisation.pos.y, node->localisation.ori);
+                if (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
+                    printf("----------------------------------------------------------------\n\n\n");
+                }
+
+            } else {
+                printf("Activation negative... ");
+
+                // Création de l'arbre de phase manuel
+                t_tree phase_tree_manuel = createEmptyTree();
+                addRoot(&phase_tree_manuel, ROOT, 1, move_list, robot_loc, map);
+
+                p_node node = phase_tree_manuel.root;
+
+                while (phase_tree_manuel.depth != nbMoveSelect || robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
+
+                    printf("Orientation : %s\n", getOrientationAsString(robot_loc.ori));
+                    printf("Point de depart du robot au debut de la phase :\n\tx : %d\n\ty : %d\n\n", robot_loc.pos.x,
+                           robot_loc.pos.y);
+
+                    printf("Coordonees de la base :\n\tx : %d\n\ty : %d\n\n", base_station_loc.x, base_station_loc.y);
+
+                    printf("Choisir un mouvement [numéro du mouvement dans la liste] :");
+
+                    int movement;
+
+                    scanf(" %d", &movement);
+
+                    addNodeV2(&phase_tree_manuel, node, findElt(*move_list, movement), map, nbMoveSelect);
+
+                    // Détermination du noeud avec le chemin le moins coûteux
+                    node = searchBetterPathNode(phase_tree_manuel);
+
+
+                    if (node->case_cost > 12999) {
+                        printf("Aucun chemin ne mene a la base (perte de signal du robot ou destruction de celui-ci\n");
+                    } else {
+                        printf("Le chemin le moins couteux est : ");
+
+                        // Affichage du chemin
+                        printPath(*node);
+
+                        printf("\n\n");
+                        printNodeSonV2(*node);
+
+                        // Affichage de la suite de mouvement correspondante
+                        printf("\n\nSoit la suite de mouvement : [");
+                        for (int i = 0; i < node->depth; i++) {
+                            printf("%s - ", getMoveAsString(node->path[i]));
+                        }
+                        printf("%s]\n\n\n", getMoveAsString(node->path[node->depth]));
+
+                        // Affectation des nouvelles coordonnées pour le robot (coordonnées de la case de fin de phase)
+                        robot_loc = loc_init(node->localisation.pos.x, node->localisation.pos.y, node->localisation.ori);
+                    }
+
+                    node = node->sons[node->nbSons - 1];
+                }
+
+                if (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
+                    printf("----------------------------------------------------------------\n\n\n");
+                }
+
             }
-
-            if (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
-                printf("----------------------------------------------------------------\n\n\n");
-            }
-
         }
+
 
         displayMap(map);
 

@@ -38,7 +38,7 @@ void addNode(p_tree tree, p_node node, t_move number_move, t_map map, int max_de
 // Fonction qui ajoute un noeud fils à un noeud donné pour l'arbre de phase
 void addNodeRec(p_tree tree, p_node node, t_map map, int max_depth);
 
-// Fonction pour la création de l'arbre en fonction des mouvements
+// Fonction pour la création de l'arbre en fonction des mouvements (Méthode 1)
 p_tree createTree(h_std_list* phase_move, t_map map, t_localisation loc, int max_depth);
 
 // Fonction d'affchage pour un noeud et ses enfants (incluant plus de détails)
@@ -51,5 +51,16 @@ p_node searchBetterNode(p_node node);
 
 // Recherche le chemin avec le moins de point et renvoie le dernier noeud de celui-ci
 p_node searchBetterPathNode(t_tree tree);
+
+// Fonction pour la création de l'arbre en fonction des mouvements (Méthode 2)
+p_tree createTreeV2(h_std_list* phase_move, t_map map, t_localisation loc, int max_depth);
+
+void printTree(t_tree tree);
+
+// Fonction qui ajoute un noeud fils à un noeud donné pour l'arbre de phase (Méthode 2)
+void addNodeRecV2(p_tree tree, p_node node, t_map map, int max_depth);
+
+// Fonction qui ajoute un noeud fils à un noeud donné (version la plus avancée, prenant en charge le coût des cases) (Méthode 2)
+void addNodeV2(p_tree tree, p_node node, t_move number_move, t_map map, int max_depth);
 
 #endif //UNTITLED1_TREE_H
