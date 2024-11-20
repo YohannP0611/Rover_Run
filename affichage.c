@@ -4,6 +4,8 @@
 
 #include "affichage.h"
 
+#include "node.h"
+
 // Affiche le message de demmarage du jeu
 void afficherDemarrage() {
     printf("*************************************\n");
@@ -34,16 +36,16 @@ void afficherInfosRobot(t_localisation robot_loc, t_position base_station_loc) {
 }
 
 // Affiche la liste des mouvements disponibles dans la phase
-void afficherMouvements(h_std_list move_list) {
+void afficherMouvements(h_std_list move_list, int nbMoveSelect) {
     printf("=====================================\n");
-    printf("|      Mouvements disponibles       |\n");
+    printf("|    Mouvements disponibles (%d)     |\n", nbMoveSelect);
     printf("=====================================\n");
     printf("| %-10s | %-10s\n", "Numero", "Mouvement\t    |");
     printf("-------------------------------------\n");
 
     p_cell tmp = move_list.head;
         while (tmp != NULL) {
-            printf("| %-10s | %-10.1d\t    |\n", getMoveAsString(tmp->move), tmp->move);
+            printf("| %-10.1d | %-10s\t    |\n", tmp->move, getMoveAsString(tmp->move));
             tmp = tmp->next;
         }
 
@@ -59,9 +61,10 @@ void afficherDebutPhase(int phase) {
 
 // Affiche la carte avec les coûts de chaque cases
 void afficherCarteAvecCouts(t_map map) {
+
     printf("*************************************\n");
     printf("*          Couts de la carte        *\n");
-    printf("*************************************\n");
+    printf("*************************************\n\n");
 
     for (int i = 0; i < map.y_max; i++) {
         for (int j = 0; j < map.x_max; j++) {
@@ -69,20 +72,20 @@ void afficherCarteAvecCouts(t_map map) {
         }
         printf("\n");
     }
-
-    printf("*************************************\n\n");
+    printf("\n\n");
+    printf("-------------------------------------\n\n\n");
 }
 
 // Affiche le résultat de fin de phase
-void afficherResultatPhase(int cout, int success) {
-    printf("*************************************\n");
+void PrintEnd(int success) {
+        printf("===============================================\n");
     if (success) {
-        printf("Phase réussie !\n");
-        printf("Coût total de la phase : %d\n", cout);
+        printf("              MISSION REUSSIE !\n");
     } else {
-        printf("Phase échouée : le robot est perdu ou détruit.\n");
+        printf("MISSION ECHOUEE : le robot est perdu ou detruit\n");
     }
-    printf("*************************************\n\n");
+        printf("===============================================\n\n");
+
 }
 
 void afficherProgression(int pourcentage) {
@@ -115,6 +118,10 @@ void afficherMenu(t_map map, int* nbMaxMove, int* nbMoveSelect) {
         printf("\n\n\n");
         printf("Entrez votre choix : ");
         scanf("%d", &choix);
+        for (int i = 0; i < 15; i++) {
+            printf("\n\n\n");
+        }
+
 
         switch (choix) {
             case 1: jouer(map, *nbMaxMove, *nbMoveSelect); break;
@@ -126,5 +133,6 @@ void afficherMenu(t_map map, int* nbMaxMove, int* nbMoveSelect) {
             getchar(); // Pause pour afficher le message
             break;
         }
+
     } while (choix != 4);
 }

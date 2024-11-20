@@ -173,20 +173,15 @@ int isEltInList(h_std_list list, t_move move) {
     p_cell tmp = list.head;
     int is_elt_in_list = 0;
 
-    printf("bbbb");
     // Parcours de la liste
     while(tmp != NULL && is_elt_in_list != 1) {
 
-        printf("esf");
-
         if (tmp->move == move) {
-            printf("rivj");
             is_elt_in_list = 1;
         }
 
         tmp = tmp->next;
     }
 
-    printf("prout");
     return is_elt_in_list;
 }

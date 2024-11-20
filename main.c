@@ -12,22 +12,18 @@ void options(int* nbMaxMove, int* nbMoveSelect);
 void afficherProgression(int pourcentage);
 void quitter();
 
-
-
 void demanderNombreMouvements(int* nbMaxMove, int* nbMoveSelect) {
     printf("\t*******************************************\n");
     printf("\t*         Configuration des phases        *\n");
     printf("\t*******************************************\n");
 
-    printf("Nombre de mouvements tirés (max) : ");
+    printf("Nombre de mouvements maximum : ");
     scanf(" %d", nbMaxMove);
     printf("Nombre de mouvements disponibles : ");
     scanf(" %d", nbMoveSelect);
 
-    printf("\n\033[1;32mConfiguration enregistrée !\033[0m\n\n");
+    printf("\nConfiguration enregistree !\n\n");
 }
-
-
 
 void jouer(t_map map, int nbMaxMove, int nbMoveSelect) {
 
@@ -37,18 +33,18 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect) {
     int running = 0;
 
     // Exemple de tableau d'éléments avec leurs pourcentages initiaux
-        tabMove items[] = {
-            {F_10, 20.0},
-            {F_20, 15.0},
-            {F_30, 20.0},
-            {B_10, 15.0},
-            {T_RIGHT, 10.0},
-            {T_LEFT, 10.0},
-            {U_TURN, 10.0}
-        };
+    tabMove items[] = {
+        {F_10, 20.0},
+        {F_20, 15.0},
+        {F_30, 20.0},
+        {B_10, 15.0},
+        {T_RIGHT, 10.0},
+        {T_LEFT, 10.0},
+        {U_TURN, 10.0}
+    };
 
-        // Nombre de mouvements au total
-        int nbMove = 7;
+    // Nombre de mouvements au total
+    int nbMove = 7;
 
 
     // Fonction d'affichage au démarrage du jeu
@@ -58,34 +54,26 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect) {
     // Affiche la carte avec les coûts de cases
     afficherCarteAvecCouts(map);
 
+    printf("\n\n\n");
 
+    // Définition des données initiales
+    int x_init = randomNumber(0, map.x_max-1);
+    int y_init = randomNumber(0, map.y_max-1);
+    t_orientation  orientation_init = randomNumber(0, 3);
 
+    // Définition des coordonnées de base du robot
+    t_localisation robot_loc = loc_init(x_init, y_init, orientation_init);
 
+    // Position de la base
+    t_position base_station_loc = getBaseStationPosition(map);
 
+    printf("\n\n\n");
 
-        printf("\n\n\n");
+    // Initialiser la location du robot pour le chemin automatique
+    t_localisation root_loc_auto = loc_init(x_init, y_init, orientation_init);
 
-        // Définition des données initiales
-        int x_init = randomNumber(0, map.x_max-1);
-        int y_init = randomNumber(0, map.y_max-1);
-        t_orientation  orientation_init = randomNumber(0, 3);
-
-        // Définition des coordonnées de base du robot
-        t_localisation robot_loc = loc_init(x_init, y_init, orientation_init);
-
-
-
-        // Position de la base
-        t_position base_station_loc = getBaseStationPosition(map);
-
-
-
-        printf("\n\n\n");
-
-        t_localisation root_loc_auto = loc_init(x_init, y_init, orientation_init);
-
-        t_localisation root_loc = loc_init(x_init, y_init, orientation_init);
-
+    // Initialiser la location du robot pour le chemin manuel
+    t_localisation root_loc = loc_init(x_init, y_init, orientation_init);
 
     while (running == 0) {
 
@@ -93,22 +81,31 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect) {
 
         while ((robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) && robot_signal == 1) {
 
+            // Afficher le message de dénut de phase
             afficherDebutPhase(numero_phase);
 
+            _sleep(1000);
 
-
+            // Afficher les informations du robot
             afficherInfosRobot(robot_loc, base_station_loc);
+
+            _sleep(1000);
 
 
             h_std_list *move_list = createListEmpty();
 
             // Sélectionner n éléments
             for (int i = 0; i < nbMaxMove; i++) {
+
+                // Choisir un mouvement aléatoire
                 t_move selected = selectRandomMove(items, nbMove);
+
+                // Ajouter l'élements dans la listee
                 addTailList(move_list, selected);
             }
 
-            afficherMouvements(*move_list);
+            // Affiche les mouvements disponibles
+            afficherMouvements(*move_list, nbMoveSelect);
 
             char guidage;
 
@@ -137,7 +134,6 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect) {
                     printPath(*node);
 
                     printf("\n\n");
-                    printNodeSonV2(*node);
 
                     // Affichage de la suite de mouvement correspondante
                     printf("\n\nSoit la suite de mouvement : [");
@@ -150,6 +146,7 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect) {
                     robot_loc = loc_init(node->localisation.pos.x, node->localisation.pos.y, node->localisation.ori);
                 }
 
+                // Augmenter le numéro de phase
                 numero_phase++;
 
                 if (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
@@ -157,60 +154,64 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect) {
                 }
 
             } else {
-                printf("Activation negative... ");
+                printf("Activation negative... \n");
 
                 // Création de l'arbre de phase manuel
                 t_tree phase_tree_manuel = createEmptyTree();
                 addRoot(&phase_tree_manuel, ROOT, 1, move_list, robot_loc, map);
 
+                // Afficher le message de dénut de phase
+                afficherDebutPhase(numero_phase);
+
+                _sleep(1000);
+
+
+
+
                 p_node node = phase_tree_manuel.root;
 
                 int rep = 0;
                 while (rep < nbMoveSelect && robot_signal == 1) {
+
+                    // Afficher les informations du robot
+                    afficherInfosRobot(robot_loc, base_station_loc);
+
+                    _sleep(1000);
+
+                    // Afficher les mouvements disponibles
+                    afficherMouvements(*move_list, nbMoveSelect);
+
                     printf("Choisir un mouvement [numero du mouvement dans la liste] :");
 
                     int movement;
                     scanf(" %d", &movement);
                     printf("\n");
 
-                    printf("aaaaaaaaaaaaaaaaa");
+                    // Vérification de la présence du mouvement dans la liste des mouvements tirés
                     while (!(isEltInList(*move_list, movement))) {
                         printf("Mouvement pas dans la liste... Choisir un autre mouvement :");
                         scanf(" %d", &movement);
                         printf("\n");
                     }
 
-                    printf("miam");
-                    //while (movement < 0 || movement > countEltHList(*move_list)) {
-                    //printf("Numero incompatible... Choisir un mouvement [numero du mouvement dans la liste] :");
-                    //scanf(" %d", &movement);
-                    //}
-
-                    displayHList(*move_list);
-                    printf("sluro");
+                    // Ajoute le noeud créé à l'arbre
                     addNodeV2(&phase_tree_manuel, node, movement, map, nbMoveSelect);
-                    printf("aaaaaaaaaaaaaaaaa");
 
-
-
+                    // Supprime le mouvement utilisé de la liste
                     move_list = removeElt(*move_list, movement);
-                    displayHList(*move_list);
 
                     node = node->sons[node->nbSons - 1];
 
                     if (node->case_cost > 10000) {
-                        printf("Aucun chemin ne mene a la base (perte de signal du robot ou destruction de celui-ci)\n");
 
                         robot_signal = 0;
 
-                    } else {
-                        printf("Le chemin le moins couteux est : ");
+                    }
+                    else {
+                        printf("Chemin suivi : ");
 
                         // Affichage du chemin
                         printPath(*node);
-
-                        printf("\n\n");
-                        printNodeSonV2(*node);
 
                         // Affichage de la suite de mouvement correspondante
                         printf("\n\nSoit la suite de mouvement : [");
@@ -219,10 +220,13 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect) {
                         }
                         printf("%s]\n\n\n", getMoveAsString(node->path[node->depth]));
 
+                        printf("\n\n");
+
                         // Affectation des nouvelles coordonnées pour le robot (coordonnées de la case de fin de phase)
                         robot_loc = loc_init(node->localisation.pos.x, node->localisation.pos.y, node->localisation.ori);
                     }
 
+                    // +1 au nombre de phase éxecuté
                     rep++;
 
 
@@ -236,6 +240,9 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect) {
 
             }
 
+        PrintEnd(robot_signal);
+        _sleep(6000);
+
 
         displayMap(map);
 
@@ -248,22 +255,36 @@ void instructions() {
     printf("Instructions du jeu :\n");
     printf("- Guidez le rover MARC vers la station de base.\n");
     printf("- Évitez les terrains dangereux comme les crevasses.\n");
-    printf("- Optimisez vos mouvements pour minimiser les coûts.\n\n");
+    printf("- Optimisez vos mouvements pour minimiser les couts.\n\n");
     getchar(); // Pause
 }
 
 void options(int* nbMaxMove, int* nbMoveSelect) {
-    printf("Options à personnaliser :\n");
-    printf("- Modifier la difficulté.\n");
-    printf("- Changer les paramètres visuels.\n");
-    printf("- Réinitialiser le jeu.\n\n");
+    int choix = 0;
 
-    demanderNombreMouvements(nbMaxMove, nbMoveSelect);
+    printf("OPTIONS :\n");
+    printf("1 - Modifier la carte.\n");
+    printf("2 - Changer la selection des mouvements.\n");
+    printf("3 - Changer la methode de construction de l'arbre (Actuellement : Methode).\n");
+    printf("4 - Retablir les parametres par defaut.\n\n");
+    printf("Entrez votre choix : ");
+    scanf("%d", &choix);
+    printf("\n");
+
+    switch (choix) {
+        case 1: // break;
+        case 2: demanderNombreMouvements(nbMaxMove, nbMoveSelect); break;
+        case 3: // break;
+        case 4: // break;
+        default:
+            printf("Choix invalide. Veuillez réessayer.\n");
+        break;
+    }
     getchar(); // Pause
 }
 
 void quitter() {
-    printf("Merci d'avoir joué à Rover Run !\n");
+    printf("MERCI D'AVOIR JOUE A ROVER RUN !\n");
     exit(0);
 }
 

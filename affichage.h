@@ -19,7 +19,7 @@ void afficherDemarrage();
 void afficherInfosRobot(t_localisation robot_loc, t_position base_station_loc);
 
 // Affiche la liste des mouvements disponibles dans la phase
-void afficherMouvements(h_std_list move_list);
+void afficherMouvements(h_std_list move_list, int nbMoveSelect);
 
 // Affiche le message de début de phase
 void afficherDebutPhase(int phase);
@@ -28,7 +28,7 @@ void afficherDebutPhase(int phase);
 void afficherCarteAvecCouts(t_map map);
 
 // Affiche le résultat de fin de phase
-void afficherResultatPhase(int cout, int success);
+void PrintEnd(int success);
 
 void afficherProgression(int pourcentage);
 
