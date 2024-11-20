@@ -85,7 +85,10 @@ void PrintEnd(int success) {
         printf("MISSION ECHOUEE : le robot est perdu ou detruit\n");
     }
         printf("===============================================\n\n");
-
+    _sleep(6000);
+    for (int i = 0; i < 15; i++) {
+        printf("\n\n\n");
+    }
 }
 
 void afficherProgression(int pourcentage) {
@@ -122,7 +125,6 @@ void afficherMenu(t_map map, int* nbMaxMove, int* nbMoveSelect) {
             printf("\n\n\n");
         }
 
-
         switch (choix) {
             case 1: jouer(map, *nbMaxMove, *nbMoveSelect); break;
             case 2: instructions(); break;
@@ -133,6 +135,5 @@ void afficherMenu(t_map map, int* nbMaxMove, int* nbMoveSelect) {
             getchar(); // Pause pour afficher le message
             break;
         }
-
     } while (choix != 4);
 }

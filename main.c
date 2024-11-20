@@ -11,14 +11,16 @@ void instructions();
 void options(int* nbMaxMove, int* nbMoveSelect);
 void afficherProgression(int pourcentage);
 void quitter();
+void demanderNombreMouvements(int* nbMaxMove, int* nbMoveSelect);
 
 void demanderNombreMouvements(int* nbMaxMove, int* nbMoveSelect) {
     printf("\t*******************************************\n");
     printf("\t*         Configuration des phases        *\n");
-    printf("\t*******************************************\n");
+    printf("\t*******************************************\n\n\n");
 
     printf("Nombre de mouvements maximum : ");
     scanf(" %d", nbMaxMove);
+    printf("\n");
     printf("Nombre de mouvements disponibles : ");
     scanf(" %d", nbMoveSelect);
 
@@ -125,7 +127,6 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect) {
 
 
                 if (node->case_cost > 12999) {
-                    printf("Aucun chemin ne mene a la base (perte de signal du robot ou destruction de celui-ci\n");
                     robot_signal = 0;
                 } else {
                     printf("Le chemin le moins couteux est : ");
@@ -136,7 +137,7 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect) {
                     printf("\n\n");
 
                     // Affichage de la suite de mouvement correspondante
-                    printf("\n\nSoit la suite de mouvement : [");
+                    printf("Soit la suite de mouvement : [");
                     for (int i = 0; i < node->depth; i++) {
                         printf("%s - ", getMoveAsString(node->path[i]));
                     }
@@ -241,8 +242,6 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect) {
             }
 
         PrintEnd(robot_signal);
-        _sleep(6000);
-
 
         displayMap(map);
 
@@ -252,10 +251,23 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect) {
 }
 
 void instructions() {
-    printf("Instructions du jeu :\n");
-    printf("- Guidez le rover MARC vers la station de base.\n");
-    printf("- Évitez les terrains dangereux comme les crevasses.\n");
-    printf("- Optimisez vos mouvements pour minimiser les couts.\n\n");
+    printf("=======================\n");
+    printf("| Instructions du jeu |\n");
+    printf("=======================\n\n");
+    printf("Contexte de la mission :\n\n2028 : Une tempete solaire tres intense vient de se produire... "
+           "Le rover MARC - MArs Rover Cartograph, qui s'acquittait fort bien de sa mission, a ete victime d’un "
+           "dysfonctionnement. Ses systemes de programmation, de guidage et de mouvements ont ete fortement alteres... "
+           "L'ESTF, Efrei Space Task Force, a fait appel a des experts en programmation pour concevoir un nouveau logiciel "
+           "de deplacement pour MARC. Votre mission est de realiser ce logiciel de deplacement pour ramener MARC jusqu'a une "
+           "station de base ou il pourra etre remis en etat.\n\nLe rover MARC\n\nMARC est un rover un peu rustique, il embarque un "
+           "systeme Linux, et tous ses programmes sont ecrits en langage C. Il se repere par sa position, et la direction a laquelle il "
+           "fait face, parmi Nord, Sud, Est et Ouest (meme sur Mars). Fort heureusement, son radar et son gyroscope fonctionnent encore et "
+           "lui permettent de se situer.\n\nSysteme de deplacement\n\nMARC peut effectuer les mouvements suivants (ce sont des mouvements "
+           "unitaires) :\n\n-	avancer de 10m\n-	avancer de 20m\n-	avancer de 30m\n-	reculer de 10m (en marche arriere)\n"
+           "-	tourner d'un quart de tour a gauche\n-	tourner d'un quart de tour a droite\n-	faire demi-tour.\n\nLes avaries "
+           "de ses systemes font que son deplacement se deroule maintenant par phases, et il ne peut donc pas directement aller"
+           " d'un point A a un point B.\nPour chaque phase, MARC disposera de mouvements possibles, et devra en choisir un nombre precis pour realiser cette phase. Il va donc falloir programmer "
+           "le \"meilleur choix possible\" de deplacement.\n");
     getchar(); // Pause
 }
 
