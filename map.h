@@ -87,4 +87,6 @@ void createRandomMap(char *filename, int ydim, int xdim);
 
 enum e_soil selectRandomSoils(tabSoils soils[], int size);
 
+int randomNumber(int min, int max);
+
 #endif //UNTITLED1_MAP_H

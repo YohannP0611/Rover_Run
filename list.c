@@ -37,18 +37,21 @@ void displayHList(h_std_list list) {
     p_cell tmp = list.head;
     printf("[");
 
-    // Parcours de la liste jusqu'à l'avant dernière cellule
-    while(tmp->next != NULL) {
+     if (tmp != NULL) {
 
-        // Affichage de la cellule
-        displayCell(*tmp);
-        printf(",");
+         // Parcours de la liste jusqu'à l'avant dernière cellule
+         while(tmp->next != NULL) {
 
-        tmp = tmp->next;
-    }
+             // Affichage de la cellule
+             displayCell(*tmp);
+             printf(",");
 
-    // Affichage de la dernière cellule
-    displayCell(*tmp);
+             tmp = tmp->next;
+         }
+
+         // Affichage de la dernière cellule
+         displayCell(*tmp);
+     }
     printf("]");
 }
 
@@ -163,4 +166,27 @@ t_move findElt(h_std_list list, int nb) {
 
     return tmp->move;
 
+}
+
+int isEltInList(h_std_list list, t_move move) {
+
+    p_cell tmp = list.head;
+    int is_elt_in_list = 0;
+
+    printf("bbbb");
+    // Parcours de la liste
+    while(tmp != NULL && is_elt_in_list != 1) {
+
+        printf("esf");
+
+        if (tmp->move == move) {
+            printf("rivj");
+            is_elt_in_list = 1;
+        }
+
+        tmp = tmp->next;
+    }
+
+    printf("prout");
+    return is_elt_in_list;
 }

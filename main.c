@@ -4,54 +4,60 @@
 #include <time.h>
 
 
-int main() {
+// Prototype des fonctions
+void jouer(t_map);
+void instructions();
+void options();
+void afficherProgression(int pourcentage);
+void quitter();
 
-    t_map map;
-
-    // Fonction pour créer une carte aléatoirement (peut faire crash le programme de temps en temps)
-    createRandomMap("..\\maps\\example2.map", randomNumber(7, 16), randomNumber(6, 15));
-
-    // The following preprocessor directive checks if the code is being compiled on a Windows system.
-    // If either _WIN32 or _WIN64 is defined, it means we are on a Windows platform.
-    // On Windows, file paths use backslashes (\), hence we use the appropriate file path for Windows.
-#if defined(_WIN32) || defined(_WIN64)
-    map = createMapFromFile("..\\maps\\example1.map");
-#else
-    map = createMapFromFile("../maps/example1.map");
-#endif
-
-    printf("Map created with dimensions %d x %d\n", map.y_max, map.x_max);
-    for (int i = 0; i < map.y_max; i++)
-    {
-        for (int j = 0; j < map.x_max; j++)
-        {
-            printf("%d ", map.soils[i][j]);
+void afficherProgression(int pourcentage) {
+    printf("[");
+    int completed = pourcentage / 10; // Une case pour chaque 10%
+    for (int i = 0; i < 10; i++) {
+        if (i < completed) {
+            printf("#"); // Rempli
+        } else {
+            printf(" "); // Vide
         }
-        printf("\n");
     }
-    // printf the costs, aligned left 5 digits
-    for (int i = 0; i < map.y_max; i++)
-    {
-        for (int j = 0; j < map.x_max; j++)
-        {
-            printf("%-5d ", map.costs[i][j]);
+    printf("] %d%%\n", pourcentage);
+}
+
+void afficherMenu(t_map map) {
+    int choix = 0;
+    do {
+        printf("*********************************\n");
+        printf("*      Rover Run - Menu         *\n");
+        printf("*********************************\n");
+        printf("* 1. Jouer                      *\n");
+        printf("* 2. Instructions               *\n");
+        printf("* 3. Options                    *\n");
+        printf("* 4. Quitter                    *\n");
+        printf("*********************************\n");
+        printf("\n\n\n");
+        printf("Entrez votre choix : ");
+        scanf("%d", &choix);
+
+        switch (choix) {
+            case 1: jouer(map); break;
+            case 2: instructions(); break;
+            case 3: options(); break;
+            case 4: quitter(); break;
+            default:
+                printf("Choix invalide. Veuillez réessayer.\n");
+            getchar(); // Pause pour afficher le message
+            break;
         }
-        printf("\n");
-    }
-    displayMap(map);
+    } while (choix != 4);
+}
+
+void jouer(t_map map) {
+    printf("Démarrage du jeu...\n");
 
     int running = 0;
 
-
-
-        printf("\n\n\n");
-
-
-
-        srand(time(NULL));
-
-
-        // Exemple de tableau d'éléments avec leurs pourcentages initiaux
+    // Exemple de tableau d'éléments avec leurs pourcentages initiaux
         tabMove items[] = {
             {F_10, 20.0},
             {F_20, 15.0},
@@ -133,9 +139,11 @@ int main() {
 
     while (running == 0) {
 
-        while (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
+        int robot_signal = 1;
 
-            printf("Debut de la phase...\n\n\n");
+        while ((robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) && robot_signal == 1) {
+
+            printf("DEBUT DE LA PHASE...\n\n\n");
 
             printf("Orientation : %s\n", getOrientationAsString(robot_loc.ori));
             printf("Point de depart du robot au debut de la phase :\n\tx : %d\n\ty : %d\n\n", robot_loc.pos.x,
@@ -171,6 +179,7 @@ int main() {
 
                 if (node->case_cost > 12999) {
                     printf("Aucun chemin ne mene a la base (perte de signal du robot ou destruction de celui-ci\n");
+                    robot_signal = 0;
                 } else {
                     printf("Le chemin le moins couteux est : ");
 
@@ -204,28 +213,44 @@ int main() {
 
                 p_node node = phase_tree_manuel.root;
 
-                while (phase_tree_manuel.depth != nbMoveSelect || robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
-
-                    printf("Orientation : %s\n", getOrientationAsString(robot_loc.ori));
-                    printf("Point de depart du robot au debut de la phase :\n\tx : %d\n\ty : %d\n\n", robot_loc.pos.x,
-                           robot_loc.pos.y);
-
-                    printf("Coordonees de la base :\n\tx : %d\n\ty : %d\n\n", base_station_loc.x, base_station_loc.y);
-
-                    printf("Choisir un mouvement [numéro du mouvement dans la liste] :");
+                int rep = 0;
+                while (rep < nbMoveSelect && robot_signal == 1) {
+                    printf("Choisir un mouvement [numero du mouvement dans la liste] :");
 
                     int movement;
-
                     scanf(" %d", &movement);
+                    printf("\n");
 
-                    addNodeV2(&phase_tree_manuel, node, findElt(*move_list, movement), map, nbMoveSelect);
+                    printf("aaaaaaaaaaaaaaaaa");
+                    while (!(isEltInList(*move_list, movement))) {
+                        printf("Mouvement pas dans la liste... Choisir un autre mouvement :");
+                        scanf(" %d", &movement);
+                        printf("\n");
+                    }
 
-                    // Détermination du noeud avec le chemin le moins coûteux
-                    node = searchBetterPathNode(phase_tree_manuel);
+                    printf("miam");
+                    //while (movement < 0 || movement > countEltHList(*move_list)) {
+                    //printf("Numero incompatible... Choisir un mouvement [numero du mouvement dans la liste] :");
+                    //scanf(" %d", &movement);
+                    //}
+
+                    displayHList(*move_list);
+                    printf("sluro");
+                    addNodeV2(&phase_tree_manuel, node, movement, map, nbMoveSelect);
+                    printf("aaaaaaaaaaaaaaaaa");
 
 
-                    if (node->case_cost > 12999) {
-                        printf("Aucun chemin ne mene a la base (perte de signal du robot ou destruction de celui-ci\n");
+
+                    move_list = removeElt(*move_list, movement);
+                    displayHList(*move_list);
+
+                    node = node->sons[node->nbSons - 1];
+
+                    if (node->case_cost > 10000) {
+                        printf("Aucun chemin ne mene a la base (perte de signal du robot ou destruction de celui-ci)\n");
+
+                        robot_signal = 0;
+
                     } else {
                         printf("Le chemin le moins couteux est : ");
 
@@ -246,15 +271,18 @@ int main() {
                         robot_loc = loc_init(node->localisation.pos.x, node->localisation.pos.y, node->localisation.ori);
                     }
 
-                    node = node->sons[node->nbSons - 1];
+                    rep++;
+
+
+
                 }
+            }
 
                 if (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
                     printf("----------------------------------------------------------------\n\n\n");
                 }
 
             }
-        }
 
 
         displayMap(map);
@@ -262,5 +290,86 @@ int main() {
         running = -1;
 
     }
+}
+
+void instructions() {
+    printf("Instructions du jeu :\n");
+    printf("- Guidez le rover MARC vers la station de base.\n");
+    printf("- Évitez les terrains dangereux comme les crevasses.\n");
+    printf("- Optimisez vos mouvements pour minimiser les coûts.\n\n");
+    getchar(); // Pause
+}
+
+void options() {
+    printf("Options à personnaliser :\n");
+    printf("- Modifier la difficulté.\n");
+    printf("- Changer les paramètres visuels.\n");
+    printf("- Réinitialiser le jeu.\n\n");
+    getchar(); // Pause
+}
+
+void quitter() {
+    printf("Merci d'avoir joué à Rover Run !\n");
+    exit(0);
+}
+
+int main() {
+
+
+
+    srand(time(NULL));
+
+    t_map map;
+
+    // Fonction pour créer une carte aléatoirement (peut faire crash le programme de temps en temps)
+    createRandomMap("..\\maps\\example2.map", randomNumber(7, 16), randomNumber(6, 15));
+
+    // The following preprocessor directive checks if the code is being compiled on a Windows system.
+    // If either _WIN32 or _WIN64 is defined, it means we are on a Windows platform.
+    // On Windows, file paths use backslashes (\), hence we use the appropriate file path for Windows.
+#if defined(_WIN32) || defined(_WIN64)
+    map = createMapFromFile("..\\maps\\example1.map");
+#else
+    printf("ouhzer");
+    map = createMapFromFile("../maps/example1.map");
+    printf("zfgqsegspjges");
+#endif
+
+    printf("Map created with dimensions %d x %d\n", map.y_max, map.x_max);
+    for (int i = 0; i < map.y_max; i++)
+    {
+        for (int j = 0; j < map.x_max; j++)
+        {
+            printf("%d ", map.soils[i][j]);
+        }
+        printf("\n");
+    }
+    // printf the costs, aligned left 5 digits
+    for (int i = 0; i < map.y_max; i++)
+    {
+        for (int j = 0; j < map.x_max; j++)
+        {
+            printf("%-5d ", map.costs[i][j]);
+        }
+        printf("\n");
+    }
+    displayMap(map);
+
+    printf("\n\n\n");
+
+    afficherMenu(map);
+
+
+
+
+
+        printf("\n\n\n");
+
+
+
+
+
+
+
     return 0;
 }

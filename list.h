@@ -34,4 +34,6 @@ int countEltHList(h_std_list list);
 // Trouver un élément en fonction de sa place dans la liste
 t_move findElt(h_std_list list, int nb);
 
+int isEltInList(h_std_list list, t_move move);
+
 #endif //UNTITLED1_LIST_H

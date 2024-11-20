@@ -327,7 +327,10 @@ void createRandomMap(char *filename, int ydim, int xdim) {
                 fprintf(file, " "); // Ajouter un espace sauf à la fin de la ligne
             }
         }
-        fprintf(file, "\n");
+        if (i < ydim - 1) {
+            fprintf(file, "\n");
+        }
+
     }
 
     // Fermeture du fichier
@@ -359,4 +362,10 @@ t_soil selectRandomSoils(tabSoils soils[], int size) {
     }
 
     return -1; // Retourne -1 si aucun élément n'est sélectionné (ne devrait pas arriver)
+}
+
+int randomNumber(int min, int max) {
+
+    return min + rand() % (max - min + 1);
+
 }
