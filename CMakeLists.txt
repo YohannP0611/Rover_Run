@@ -21,4 +21,6 @@ add_executable(untitled1 main.c
         list.c
         node.c
         tree.h
-        tree.c)
+        tree.c
+        affichage.h
+        affichage.c)
