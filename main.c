@@ -5,7 +5,52 @@
 #include "affichage.h"
 #include <unistd.h> // Pour sleep()
 
+char* concatPath(const char* path, const char* filename) {
+    static char fullPath[200];
+    snprintf(fullPath, sizeof(fullPath), "%s%s", path, filename);
+    return fullPath;
+}
 
+void modifierCarte(t_map* map) {
+    int choix = 0;
+    char nomCarte[100];
+
+    printf("======================================\n");
+    printf("|     Modification de la carte       |\n");
+    printf("======================================\n");
+    printf("| 1 - Charger une carte existante    |\n");
+    printf("| 2 - Creer une nouvelle carte       |\n");
+    printf("--------------------------------------\n");
+
+    printf("Entrez votre choix : ");
+    scanf("%d", &choix);
+    getchar(); // Consommer le retour à la ligne.
+
+    switch (choix) {
+        case 1: // Charger une carte existante
+            printf("Entrez le nom de la carte a charger (sans chemin, exemple : example2.map) : ");
+            fgets(nomCarte, sizeof(nomCarte), stdin);
+            nomCarte[strcspn(nomCarte, "\n")] = '\0'; // Enlever le retour à la ligne.
+            printf("\n");
+            *map = createMapFromFile(concatPath("..\\maps\\", nomCarte));
+            printf(" Chargement carte : %s\n\n", nomCarte);
+            break;
+
+        case 2: // Créer une nouvelle carte
+            printf("Entrez le nom de la nouvelle carte (sans chemin, exemple : nouvelle.map) : ");
+            fgets(nomCarte, sizeof(nomCarte), stdin);
+            nomCarte[strcspn(nomCarte, "\n")] = '\0';
+            printf("\n");
+            createRandomMap(concatPath("..\\maps\\", nomCarte), randomNumber(7, 16), randomNumber(6, 15));
+            *map = createMapFromFile(concatPath("..\\maps\\", nomCarte));
+            printf("Nouvelle carte creee et chargee : %s\n\n", nomCarte);
+            break;
+
+        default:
+            printf("Choix invalide. Veuillez réessayer\n");
+            break;
+    }
+}
 
 
 void demanderNombreMouvements(int* nbMaxMove, int* nbMoveSelect) {
@@ -306,7 +351,8 @@ void options(int* nbMaxMove, int* nbMoveSelect, t_map* map, int* methode) {
     printf("\n");
 
     switch (choix) {
-        case 1: break;
+        case 1: modifierCarte(map);
+                break;
 
         case 2: demanderNombreMouvements(nbMaxMove, nbMoveSelect);
                 break;
