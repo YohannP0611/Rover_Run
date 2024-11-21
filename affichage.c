@@ -6,6 +6,14 @@
 
 #include "node.h"
 
+// Prototype des fonctions
+void jouer(t_map, int, int, int methode);
+void instructions();
+void options(int* nbMaxMove, int* nbMoveSelect, t_map* map,int* methode);
+void afficherProgression(int pourcentage);
+void quitter();
+void demanderNombreMouvements(int* nbMaxMove, int* nbMoveSelect);
+
 // Affiche le message de demmarage du jeu
 void afficherDemarrage() {
     printf("*************************************\n");
@@ -105,7 +113,7 @@ void afficherProgression(int pourcentage) {
 }
 
 // Affiche le menu du jeu
-void afficherMenu(t_map map, int* nbMaxMove, int* nbMoveSelect) {
+void afficherMenu(t_map* map, int* nbMaxMove, int* nbMoveSelect, int* methode) {
     int choix = 0;
     do {
         printf("\n\n\n");
@@ -126,9 +134,9 @@ void afficherMenu(t_map map, int* nbMaxMove, int* nbMoveSelect) {
         }
 
         switch (choix) {
-            case 1: jouer(map, *nbMaxMove, *nbMoveSelect); break;
+            case 1: jouer(*map, *nbMaxMove, *nbMoveSelect, *methode); break;
             case 2: instructions(); break;
-            case 3: options(nbMaxMove, nbMoveSelect); break;
+            case 3: options(nbMaxMove, nbMoveSelect, map, methode); break;
             case 4: quitter(); break;
             default:
                 printf("Choix invalide. Veuillez réessayer.\n");

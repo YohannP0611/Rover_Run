@@ -3,15 +3,10 @@
 #include "tree.h"
 #include <time.h>
 #include "affichage.h"
+#include <unistd.h> // Pour sleep()
 
 
-// Prototype des fonctions
-void jouer(t_map, int, int);
-void instructions();
-void options(int* nbMaxMove, int* nbMoveSelect);
-void afficherProgression(int pourcentage);
-void quitter();
-void demanderNombreMouvements(int* nbMaxMove, int* nbMoveSelect);
+
 
 void demanderNombreMouvements(int* nbMaxMove, int* nbMoveSelect) {
     printf("\t*******************************************\n");
@@ -27,7 +22,7 @@ void demanderNombreMouvements(int* nbMaxMove, int* nbMoveSelect) {
     printf("\nConfiguration enregistree !\n\n");
 }
 
-void jouer(t_map map, int nbMaxMove, int nbMoveSelect) {
+void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
 
     // Numéro de la phase
     int numero_phase = 1;
@@ -102,9 +97,14 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect) {
                 // Choisir un mouvement aléatoire
                 t_move selected = selectRandomMove(items, nbMove);
 
-                // Ajouter l'élements dans la listee
+                // Ajouter l'éléments dans la liste
                 addTailList(move_list, selected);
             }
+
+            //for(int i = 0; i< 11; i++) {
+                //afficherProgression(i*10);
+                //_sleep(500);
+            //}
 
             // Affiche les mouvements disponibles
             afficherMouvements(*move_list, nbMoveSelect);
@@ -117,10 +117,16 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect) {
 
             if (guidage == 'Y') {
 
-                // Création de l'arbre de phase (Méthode 1)
-                p_tree ptr_phase_tree_auto = createTree(move_list, map, robot_loc, nbMoveSelect);
+                p_tree ptr_phase_tree_auto;
 
-                //p_tree ptr_phase_tree_auto = createTreeV2(move_list, map, robot_loc, nbMoveSelect);
+                if (methode == 1) {
+                    // Création de l'arbre de phase (Méthode 1)
+                    ptr_phase_tree_auto = createTree(move_list, map, robot_loc, nbMoveSelect);
+                }
+                if (methode == 2) {
+                    // Création de l'arbre de phase (Méthode 2)
+                    ptr_phase_tree_auto = createTreeV2(move_list, map, robot_loc, nbMoveSelect);
+                }
 
                 // Détermination du noeud avec le chemin le moins coûteux
                 p_node node = searchBetterPathNode(*ptr_phase_tree_auto);
@@ -152,27 +158,41 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect) {
 
                 if (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
                     printf("----------------------------------------------------------------\n\n\n");
+                    _sleep(3000);
                 }
 
             } else {
-                printf("Activation negative... \n");
 
-                // Création de l'arbre de phase manuel
-                t_tree phase_tree_manuel = createEmptyTree();
+                // Déclaration de l'arbre
+                t_tree phase_tree_manuel;
+
+                if (methode == 1) {
+                    // Création de l'arbre de phase manuel (Méthode 1)
+                    phase_tree_manuel = createEmptyTree();
+                }
+                if (methode == 2) {
+                    // Création de l'arbre de phase (Méthode 1)
+                    phase_tree_manuel = *createTreeV2(move_list, map, robot_loc, nbMoveSelect);
+                }
+
+                // Ajour de la racine de l'arbre
                 addRoot(&phase_tree_manuel, ROOT, 1, move_list, robot_loc, map);
 
                 // Afficher le message de dénut de phase
                 afficherDebutPhase(numero_phase);
 
+                // Temps d'arrêt du programme de 1s
                 _sleep(1000);
 
 
 
-
+                // Déclaration du noeud pour parcourir l'arbre
                 p_node node = phase_tree_manuel.root;
 
                 int rep = 0;
-                while (rep < nbMoveSelect && robot_signal == 1) {
+
+                // Tant que le nombre de mouvements à sélectionner n'est pas atteint, que le robot n'est pas hors signal (détruit ou sorti de la carte) et que le robot n'est pas arrivé aux coordonnées de la base
+                while (rep < nbMoveSelect && robot_signal == 1 && (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y)) {
 
                     // Afficher les informations du robot
                     afficherInfosRobot(robot_loc, base_station_loc);
@@ -201,10 +221,12 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect) {
                     // Supprime le mouvement utilisé de la liste
                     move_list = removeElt(*move_list, movement);
 
+                    // Passe au noeud suivant
                     node = node->sons[node->nbSons - 1];
 
                     if (node->case_cost > 10000) {
 
+                        // Mettre le signal du robot à 0 pour indiquer une perte de signal de celui-ci
                         robot_signal = 0;
 
                     }
@@ -271,26 +293,39 @@ void instructions() {
     getchar(); // Pause
 }
 
-void options(int* nbMaxMove, int* nbMoveSelect) {
+void options(int* nbMaxMove, int* nbMoveSelect, t_map* map, int* methode) {
     int choix = 0;
 
     printf("OPTIONS :\n");
     printf("1 - Modifier la carte.\n");
     printf("2 - Changer la selection des mouvements.\n");
-    printf("3 - Changer la methode de construction de l'arbre (Actuellement : Methode).\n");
+    printf("3 - Changer la methode de construction de l'arbre (Actuellement : Methode %d).\n", *methode);
     printf("4 - Retablir les parametres par defaut.\n\n");
     printf("Entrez votre choix : ");
     scanf("%d", &choix);
     printf("\n");
 
     switch (choix) {
-        case 1: // break;
-        case 2: demanderNombreMouvements(nbMaxMove, nbMoveSelect); break;
-        case 3: // break;
-        case 4: // break;
+        case 1: break;
+
+        case 2: demanderNombreMouvements(nbMaxMove, nbMoveSelect);
+                break;
+
+        case 3: printf("3 - Changer la methode de construction de l'arbre (Actuellement : Methode %d).\n\n", *methode);
+                printf("Entrez votre choix : ");
+                scanf("%d", methode);
+                printf("\n");
+                break;
+
+        case 4: *nbMaxMove = 9;
+                *nbMoveSelect = 5;
+                *map = createMapFromFile("..\\maps\\example1.map");
+                *methode = 1;
+                break;
+
         default:
             printf("Choix invalide. Veuillez réessayer.\n");
-        break;
+            break;
     }
     getchar(); // Pause
 }
@@ -301,6 +336,9 @@ void quitter() {
 }
 
 int main() {
+
+    // Initialisation de la méthode utilisée pour l'arbre (par défaut : Méthode 1)
+    int methode = 1;
 
     // Initialisation de la fonction aléatoire
     srand(time(NULL));
@@ -355,7 +393,7 @@ int main() {
     printf("\n\n\n");
 
     // Affiche le menu du jeu
-    afficherMenu(map, &nbMaxMove, &nbMoveSelect);
+    afficherMenu(&map, &nbMaxMove, &nbMoveSelect, &methode);
 
     return 0;
 }

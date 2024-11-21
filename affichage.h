@@ -4,12 +4,6 @@
 #include "list.h"
 #include "map.h"
 
-// Prototype des fonctions
-void jouer(t_map, int, int);
-void instructions();
-void options(int* nbMaxMove, int* nbMoveSelect);
-void afficherProgression(int pourcentage);
-void quitter();
 
 
 // Affiche le message de demmarage du jeu
@@ -33,6 +27,6 @@ void PrintEnd(int success);
 void afficherProgression(int pourcentage);
 
 // Affiche le menu du jeu
-void afficherMenu(t_map map, int* nbMaxMove, int* nbMoveSelect);
+void afficherMenu(t_map* map, int* nbMaxMove, int* nbMoveSelect, int* methode);
 
 #endif //AFFICHAGE_H
