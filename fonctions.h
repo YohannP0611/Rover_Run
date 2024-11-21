@@ -25,7 +25,7 @@ void afficherDebutPhase(int phase);
 void afficherCarteAvecCouts(t_map map);
 
 // Affiche le résultat de fin de phase
-void PrintEnd(int success);
+void AfficherResultats(int success);
 
 // Affiche la progression d'une tâche
 void afficherProgression(int pourcentage);

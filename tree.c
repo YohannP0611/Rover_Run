@@ -418,8 +418,8 @@ void addNodeRecV2(p_tree tree, p_node node, t_map map, int max_depth) {
 
         if (node->depth < max_depth) {
 
-            // Stocker le mouvement corespondant au minimum de point
-            t_move min_move;
+            // Stocker le mouvement correspondant au minimum de point
+            t_move min_move = ROOT;
 
             // Stocker le coût de la case la plus petite
             int min_case_cost = 65000;
@@ -439,7 +439,7 @@ void addNodeRecV2(p_tree tree, p_node node, t_map map, int max_depth) {
             addNodeV2(tree, node, min_move, map, max_depth);
 
 
-            // Appel récursif de la fonction pour constuire l'abre entier
+            // Appel récursif de la fonction pour construire l'arbre entier
             for (int i = 0; i < max_depth; i++) {
 
                 addNodeRecV2(tree, node->sons[0], map, max_depth);
@@ -483,7 +483,6 @@ void addNodeV2(p_tree tree, p_node node, t_move number_move, t_map map, int max_
                     // Affectation des movements encore disponible (supprime le mouvement qu'on vient d'ajouter)
                     new_node->avails = removeElt(*node->avails, number_move);
 
-
                     // Affectation du nouveau mouvement dans le chemin (chemin du parent + number_move du noeud actuel)
                     new_node->path[node->depth + 1] = new_node->move;
 
@@ -506,7 +505,7 @@ void addNodeV2(p_tree tree, p_node node, t_move number_move, t_map map, int max_
 
                     }
 
-                        // Sinon le noeud devient une feuille avec une case de valeur 13000 (coût d'une case interdite)
+                    // Sinon le noeud devient une feuille avec une case de valeur 13000 (coût d'une case interdite)
                     else {
                         new_node->nbSons = 0;
                         new_node->case_cost = 13000;

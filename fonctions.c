@@ -89,7 +89,7 @@ void afficherCarteAvecCouts(t_map map) {
 }
 
 // Affiche le résultat de fin de phase
-void PrintEnd(int success) {
+void AfficherResultats(int success) {
         printf("===============================================\n");
     if (success) {
         printf("              MISSION REUSSIE !\n");
@@ -168,8 +168,10 @@ void instructions() {
            "-	tourner d'un quart de tour a gauche\n-	tourner d'un quart de tour a droite\n-	faire demi-tour.\n\nLes avaries "
            "de ses systemes font que son deplacement se deroule maintenant par phases, et il ne peut donc pas directement aller"
            " d'un point A a un point B.\nPour chaque phase, MARC disposera de mouvements possibles, et devra en choisir un nombre precis pour realiser cette phase. Il va donc falloir programmer "
-           "le \"meilleur choix possible\" de deplacement.\n");
-    getchar(); // Pause
+           "le \"meilleur choix possible\" de deplacement.\n\n\n");
+    printf("[Appuyez sur ENTREE pour continuer]");
+    getchar();
+    getchar();
 }
 
 
@@ -303,7 +305,7 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
 
         while ((robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) && robot_signal == 1) {
 
-            // Afficher le message de dénut de phase
+            // Afficher le message de début de phase
             afficherDebutPhase(numero_phase);
 
             _sleep(1000);
@@ -334,11 +336,18 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
             // Affiche les mouvements disponibles
             afficherMouvements(*move_list, nbMoveSelect);
 
-            char guidage;
+            char guidage = ' ';
 
             printf("\n\n\n\nActiver le systeme de guidage automatique ? [Y/n] : ");
             scanf(" %c", &guidage);
             printf("\n");
+
+            // Saisie sécurisée
+            while (guidage != 'Y' && guidage != 'n') {
+                printf("\nReponse invalide... Activer le systeme de guidage automatique ? [Y/n] : ");
+                scanf(" %c", &guidage);
+                printf("\n");
+            }
 
             if (guidage == 'Y') {
 
@@ -349,7 +358,8 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
                     ptr_phase_tree_auto = createTree(move_list, map, robot_loc, nbMoveSelect);
                 }
                 if (methode == 2) {
-                    // Création de l'arbre de phase (Méthode 2)
+
+                    // Création de l'arbre de phase (Méthode 1)
                     ptr_phase_tree_auto = createTreeV2(move_list, map, robot_loc, nbMoveSelect);
                 }
 
@@ -383,33 +393,22 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
 
                 if (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
                     printf("----------------------------------------------------------------\n\n\n");
-                    _sleep(3000);
+                    _sleep(1000);
                 }
 
             } else {
 
-                // Déclaration de l'arbre
-                t_tree phase_tree_manuel;
-
-                if (methode == 1) {
-                    // Création de l'arbre de phase manuel (Méthode 1)
-                    phase_tree_manuel = createEmptyTree();
-                }
-                if (methode == 2) {
-                    // Création de l'arbre de phase (Méthode 1)
-                    phase_tree_manuel = *createTreeV2(move_list, map, robot_loc, nbMoveSelect);
-                }
+                // Création de l'arbre de phase manuel
+                t_tree phase_tree_manuel = createEmptyTree();
 
                 // Ajour de la racine de l'arbre
                 addRoot(&phase_tree_manuel, ROOT, 1, move_list, robot_loc, map);
 
-                // Afficher le message de dénut de phase
+                // Afficher le message de début de phase
                 afficherDebutPhase(numero_phase);
 
                 // Temps d'arrêt du programme de 1s
                 _sleep(1000);
-
-
 
                 // Déclaration du noeud pour parcourir l'arbre
                 p_node node = phase_tree_manuel.root;
@@ -425,7 +424,7 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
                     _sleep(1000);
 
                     // Afficher les mouvements disponibles
-                    afficherMouvements(*move_list, nbMoveSelect);
+                    afficherMouvements(*move_list, nbMoveSelect - rep);
 
                     printf("Choisir un mouvement [numero du mouvement dans la liste] :");
 
@@ -474,12 +473,13 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
                         robot_loc = loc_init(node->localisation.pos.x, node->localisation.pos.y, node->localisation.ori);
                     }
 
-                    // +1 au nombre de phase éxecuté
+                    // Augmenter le nombre de mouvements éxecuté
                     rep++;
 
-
-
                 }
+
+                // Augmenter le numéro de phase
+                numero_phase++;
             }
 
             if (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
@@ -488,7 +488,7 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
 
         }
 
-        PrintEnd(robot_signal);
+        AfficherResultats(robot_signal);
 
         displayMap(map);
 

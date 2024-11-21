@@ -57,7 +57,7 @@ int main() {
     // Nombre de mouvements tiré
     int nbMaxMove = 9;
 
-    // Nombre de mouvement sélectionné
+    // Nombre de mouvements sélectionné
     int nbMoveSelect = 5;
 
     printf("\n\n\n");
