@@ -22,5 +22,5 @@ add_executable(untitled1 main.c
         node.c
         tree.h
         tree.c
-        affichage.h
-        affichage.c)
+        fonctions.h
+        fonctions.c)
