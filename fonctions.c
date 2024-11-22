@@ -32,7 +32,7 @@ void afficherDemarrage() {
 }
 
 // Affiche la localisation du robot et les coordonées de la phase
-void afficherInfosRobot(t_localisation robot_loc, t_position base_station_loc, t_map map) {
+void afficherInfosRobot(t_localisation robot_loc, t_position base_station_loc) {
     printf("*************************************\n");
     printf("*       Informations du robot       *\n");
     printf("*************************************\n");
@@ -40,7 +40,6 @@ void afficherInfosRobot(t_localisation robot_loc, t_position base_station_loc, t
     printf("* Position actuelle :               *\n");
     printf("*\tx : %d    \t\t    *\n", robot_loc.pos.x);
     printf("*\ty : %d    \t\t    *\n", robot_loc.pos.y);
-    printf("* Attention (%s)\t*\n", getSoilAsString(map.soils[robot_loc.pos.y][robot_loc.pos.x]));
     printf("*                                   *\n");
     printf("* Position de la base :             *\n");
     printf("*\tx : %d    \t\t    *\n", base_station_loc.x);
@@ -66,10 +65,12 @@ void afficherMouvements(h_std_list move_list, int nbMoveSelect) {
 }
 
 // Affiche le message de début de phase
-void afficherDebutPhase(int phase) {
+void afficherDebutPhase(int phase, t_map map, t_localisation robot_loc) {
     printf("=========================================\n");
     printf("          Debut de la phase %d\n", phase);
     printf("=========================================\n\n");
+
+    printf("\n\nAttention Case : %s\n", getSoilAsString(map.soils[robot_loc.pos.y][robot_loc.pos.x]));
 }
 
 // Affiche la carte avec les coûts de chaque cases
@@ -309,7 +310,7 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
             int new_nbMoveSelect = nbMoveSelect;
 
             // Afficher le message de début de phase
-            afficherDebutPhase(numero_phase);
+            afficherDebutPhase(numero_phase, map, robot_loc);
 
             _sleep(1000);
 
@@ -318,7 +319,7 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
             }
 
             // Afficher les informations du robot
-            afficherInfosRobot(robot_loc, base_station_loc, map);
+            afficherInfosRobot(robot_loc, base_station_loc);
 
             _sleep(1000);
 
@@ -417,7 +418,7 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
                 addRoot(&phase_tree_manuel, ROOT, 1, move_list, robot_loc, map);
 
                 // Afficher le message de début de phase
-                afficherDebutPhase(numero_phase);
+                afficherDebutPhase(numero_phase, map, robot_loc);
 
                 // Temps d'arrêt du programme de 1s
                 _sleep(1000);
@@ -431,7 +432,7 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
                 while (rep < new_nbMoveSelect && robot_signal == 1 && (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y)) {
 
                     // Afficher les informations du robot
-                    afficherInfosRobot(robot_loc, base_station_loc, map);
+                    afficherInfosRobot(robot_loc, base_station_loc);
 
                     _sleep(1000);
 

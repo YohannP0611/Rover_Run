@@ -6,7 +6,7 @@
 int main() {
 
     // Initialisation de la méthode utilisée pour l'arbre (par défaut : Méthode 1)
-    int methode = 2;
+    int methode = 1;
 
     // Initialisation de la fonction aléatoire
     srand(time(NULL));

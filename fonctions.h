@@ -13,13 +13,13 @@
 void afficherDemarrage();
 
 // Affiche la localisation du robot et les coordonées de la phase
-void afficherInfosRobot(t_localisation robot_loc, t_position base_station_loc, t_map map);
+void afficherInfosRobot(t_localisation robot_loc, t_position base_station_loc);
 
 // Affiche la liste des mouvements disponibles dans la phase
 void afficherMouvements(h_std_list move_list, int nbMoveSelect);
 
 // Affiche le message de début de phase
-void afficherDebutPhase(int phase);
+void afficherDebutPhase(int phase, t_map map, t_localisation robot_loc);
 
 // Affiche la carte avec les coûts de chaque cases
 void afficherCarteAvecCouts(t_map map);
