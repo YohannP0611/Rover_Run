@@ -32,7 +32,7 @@ void afficherDemarrage() {
 }
 
 // Affiche la localisation du robot et les coordonées de la phase
-void afficherInfosRobot(t_localisation robot_loc, t_position base_station_loc) {
+void afficherInfosRobot(t_localisation robot_loc, t_position base_station_loc, t_map map) {
     printf("*************************************\n");
     printf("*       Informations du robot       *\n");
     printf("*************************************\n");
@@ -40,6 +40,7 @@ void afficherInfosRobot(t_localisation robot_loc, t_position base_station_loc) {
     printf("* Position actuelle :               *\n");
     printf("*\tx : %d    \t\t    *\n", robot_loc.pos.x);
     printf("*\ty : %d    \t\t    *\n", robot_loc.pos.y);
+    printf("* Attention (%s)\t*\n", getSoilAsString(map.soils[robot_loc.pos.y][robot_loc.pos.x]));
     printf("*                                   *\n");
     printf("* Position de la base :             *\n");
     printf("*\tx : %d    \t\t    *\n", base_station_loc.x);
@@ -281,8 +282,8 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
     printf("\n\n\n");
 
     // Définition des données initiales
-    int x_init = randomNumber(0, map.x_max-1);
-    int y_init = randomNumber(0, map.y_max-1);
+    int x_init = 1; //randomNumber(0, map.x_max-1);
+    int y_init = 0; //randomNumber(0, map.y_max-1);
     t_orientation  orientation_init = randomNumber(0, 3);
 
     // Définition des coordonnées de base du robot
@@ -305,13 +306,19 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
 
         while ((robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) && robot_signal == 1) {
 
+            int new_nbMoveSelect = nbMoveSelect;
+
             // Afficher le message de début de phase
             afficherDebutPhase(numero_phase);
 
             _sleep(1000);
 
+            if (map.soils[robot_loc.pos.y][robot_loc.pos.x] == REG && nbMoveSelect > 4) {
+                new_nbMoveSelect = 4;
+            }
+
             // Afficher les informations du robot
-            afficherInfosRobot(robot_loc, base_station_loc);
+            afficherInfosRobot(robot_loc, base_station_loc, map);
 
             _sleep(1000);
 
@@ -334,7 +341,7 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
             //}
 
             // Affiche les mouvements disponibles
-            afficherMouvements(*move_list, nbMoveSelect);
+            afficherMouvements(*move_list, new_nbMoveSelect);
 
             char guidage = ' ';
 
@@ -357,7 +364,7 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
 
                 if (methode == 1) {
                     // Création de l'arbre de phase (Méthode 1)
-                    ptr_phase_tree_auto = createTree(move_list, map, robot_loc, nbMoveSelect);
+                    ptr_phase_tree_auto = createTree(move_list, map, robot_loc, new_nbMoveSelect);
 
                     // Détermination du noeud avec le chemin le moins coûteux
                     node = searchBetterPathNode(*ptr_phase_tree_auto);
@@ -365,7 +372,7 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
                 if (methode == 2) {
 
                     // Création de l'arbre de phase (Méthode 1)
-                    ptr_phase_tree_auto = createTreeV2(move_list, map, robot_loc, nbMoveSelect);
+                    ptr_phase_tree_auto = createTreeV2(move_list, map, robot_loc, new_nbMoveSelect);
 
                     // Détermination du noeud avec le chemin le moins coûteux
                     node = printLastNodeTreeV2(*ptr_phase_tree_auto);
@@ -421,15 +428,15 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
                 int rep = 0;
 
                 // Tant que le nombre de mouvements à sélectionner n'est pas atteint, que le robot n'est pas hors signal (détruit ou sorti de la carte) et que le robot n'est pas arrivé aux coordonnées de la base
-                while (rep < nbMoveSelect && robot_signal == 1 && (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y)) {
+                while (rep < new_nbMoveSelect && robot_signal == 1 && (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y)) {
 
                     // Afficher les informations du robot
-                    afficherInfosRobot(robot_loc, base_station_loc);
+                    afficherInfosRobot(robot_loc, base_station_loc, map);
 
                     _sleep(1000);
 
                     // Afficher les mouvements disponibles
-                    afficherMouvements(*move_list, nbMoveSelect - rep);
+                    afficherMouvements(*move_list, new_nbMoveSelect - rep);
 
                     printf("Choisir un mouvement [numero du mouvement dans la liste] :");
 
@@ -445,7 +452,7 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
                     }
 
                     // Ajoute le noeud créé à l'arbre
-                    addNodeV2(&phase_tree_manuel, node, movement, map, nbMoveSelect);
+                    addNodeV2(&phase_tree_manuel, node, movement, map, new_nbMoveSelect);
 
                     // Supprime le mouvement utilisé de la liste
                     move_list = removeElt(*move_list, movement);
@@ -523,9 +530,12 @@ void options(int* nbMaxMove, int* nbMoveSelect, t_map* map, int* methode) {
             break;
 
         case 3: printf("3 - Changer la methode de construction de l'arbre (Actuellement : Methode %d).\n\n", *methode);
-            printf("Entrez votre choix : ");
-            scanf("%d", methode);
-            printf("\n");
+            do {
+                printf("Entrez votre choix : ");
+                scanf("%d", methode);
+                printf("\n");
+            }
+            while (*methode != 1 && *methode != 2);
             break;
 
         case 4: *nbMaxMove = 9;

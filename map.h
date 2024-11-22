@@ -7,6 +7,15 @@
 
 #include "loc.h"
 
+
+/**
+ * @brief Array of strings for the possible moves of the robot
+ */
+static char _soil[5][12] = {"BASE_STATION", "PLAIN", "ERG", "REG", "CREVASSE"};
+
+/**
+ *
+ */
 #define COST_UNDEF 65535
 /**
  * @brief Enum for the possible soils of the map
@@ -88,5 +97,7 @@ void createRandomMap(char *filename, int ydim, int xdim);
 enum e_soil selectRandomSoils(tabSoils soils[], int size);
 
 int randomNumber(int min, int max);
+
+char *getSoilAsString(t_soil soil);
 
 #endif //UNTITLED1_MAP_H

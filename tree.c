@@ -162,8 +162,8 @@ void addNodeRec(p_tree tree, p_node node, t_map map, int max_depth) {
 
             // Appel récursif de la fonction pour constuire l'abre entier
             for (int i = 0; i < node->nbSons; i++) {
-
                 addNodeRec(tree, node->sons[i], map, max_depth);
+
 
             }
         }
@@ -211,6 +211,23 @@ void addNode(p_tree tree, p_node node, t_move number_move, t_map map, int max_de
                     // Changement de la profondeur total de l'arbre dans le cas où le nouveau noeud est le plus profond
                     if(tree->depth < new_node->depth) {
                         tree->depth = new_node->depth;
+                    }
+
+                    if (node->depth == 0) {
+
+                        switch (map.soils[node->localisation.pos.y][node->localisation.pos.x]) {
+
+                            case ERG : if (number_move == F_20 || number_move == F_30 || number_move == U_TURN) {
+                                number_move = number_move - 1;
+                            }
+                            else {
+                                number_move = ROOT;
+                            }
+                            break;
+
+                            default: break;
+                        }
+
                     }
 
                     // Si la nouvelle localisation appartient à la map
@@ -416,6 +433,7 @@ void addNodeRecV2(p_tree tree, p_node node, t_map map, int max_depth) {
 
     // Sinon
     if (node->depth < max_depth) {
+
         // Stocker le mouvement correspondant au minimum de point
         t_move min_move = ROOT;
 
@@ -424,16 +442,37 @@ void addNodeRecV2(p_tree tree, p_node node, t_map map, int max_depth) {
 
         // Ajout des noeuds fils en fonction du mouvement le plus intéressant
         for (int i = 0; i < countEltHList(*node->avails); i++) {
+
             t_move current_move = findElt(*node->avails, i);
-            t_localisation new_loc = move(node->localisation, current_move);
-            if (isValidLocalisation(new_loc.pos, map.x_max, map.y_max) &&
-                map.costs[new_loc.pos.y][new_loc.pos.x] < min_case_cost) {
+
+            t_localisation new_loc;
+
+            if (node->depth == 0) {
+
+                switch (map.soils[node->localisation.pos.y][node->localisation.pos.x]) {
+
+                    case ERG : if (current_move == F_20 || current_move == F_30 || current_move == U_TURN) {
+                        new_loc = move(node->localisation, current_move - 1);;
+                    }
+                    else {
+                        new_loc = node->localisation;
+                    }
+                        break;
+
+                    default: new_loc = move(node->localisation, current_move);
+                        break;
+                }
+
+            }
+
+            if (isValidLocalisation(new_loc.pos, map.x_max, map.y_max) && map.costs[new_loc.pos.y][new_loc.pos.x] < min_case_cost) {
                 min_case_cost = map.costs[new_loc.pos.y][new_loc.pos.x];
                 min_move = current_move;
             }
         }
 
         if (min_move == ROOT || min_case_cost < 12999) {
+
             // Ajout du noeud le plus intéressant
             addNodeV2(tree, node, min_move, map, max_depth);
 
@@ -445,6 +484,7 @@ void addNodeRecV2(p_tree tree, p_node node, t_map map, int max_depth) {
             }
         } else {
             node->nbSons = 0;
+
             // Ajout du noeud le plus intéressant
             addNodeV2(tree, node, min_move, map, max_depth);
         }
@@ -487,6 +527,22 @@ void addNodeV2(p_tree tree, p_node node, t_move number_move, t_map map, int max_
                 tree->depth = new_node->depth;
             }
 
+            if (node->depth == 0) {
+
+                switch (map.soils[node->localisation.pos.y][node->localisation.pos.x]) {
+
+                    case ERG : if (number_move == F_20 || number_move == F_30 || number_move == U_TURN) {
+                        number_move = number_move - 1;
+                    }
+                    else {
+                        number_move = ROOT;
+                    }
+                    break;
+
+                    default: break;
+                }
+
+            }
             // Si la nouvelle localisation appartient à la map
             t_localisation new_loc = move(node->localisation, number_move);
             if (isValidLocalisation(new_loc.pos, map.x_max, map.y_max)) {

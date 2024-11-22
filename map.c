@@ -369,3 +369,8 @@ int randomNumber(int min, int max) {
     return min + rand() % (max - min + 1);
 
 }
+
+char *getSoilAsString(t_soil soil)
+{
+    return _soil[soil];
+}

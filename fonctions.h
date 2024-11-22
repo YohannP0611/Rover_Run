@@ -13,7 +13,7 @@
 void afficherDemarrage();
 
 // Affiche la localisation du robot et les coordonées de la phase
-void afficherInfosRobot(t_localisation robot_loc, t_position base_station_loc);
+void afficherInfosRobot(t_localisation robot_loc, t_position base_station_loc, t_map map);
 
 // Affiche la liste des mouvements disponibles dans la phase
 void afficherMouvements(h_std_list move_list, int nbMoveSelect);
