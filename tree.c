@@ -528,3 +528,13 @@ void printTree(t_tree tree) {
         node = node->sons[node->nbSons];
     }
 }
+
+// Retourne le dernier noeud de l'arbre Methode 2
+p_node printLastNodeTreeV2(t_tree tree) {
+    p_node node = tree.root;
+    while(node->sons[node->nbSons] == NULL) {
+        node = node->sons[node->nbSons];
+    }
+
+    return node;
+}
