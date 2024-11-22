@@ -63,4 +63,7 @@ void addNodeRecV2(p_tree tree, p_node node, t_map map, int max_depth);
 // Fonction qui ajoute un noeud fils à un noeud donné (version la plus avancée, prenant en charge le coût des cases) (Méthode 2)
 void addNodeV2(p_tree tree, p_node node, t_move number_move, t_map map, int max_depth);
 
+// Retourne le dernier noeud de l'arbre Methode 2
+p_node printLastNodeTreeV2(t_tree tree);
+
 #endif //UNTITLED1_TREE_H
