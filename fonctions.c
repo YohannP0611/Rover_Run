@@ -366,7 +366,6 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
 
                     // Création de l'arbre de phase (Méthode 1)
                     ptr_phase_tree_auto = createTreeV2(move_list, map, robot_loc, nbMoveSelect);
-                    printf("ojesoifsges");
 
                     // Détermination du noeud avec le chemin le moins coûteux
                     node = printLastNodeTreeV2(*ptr_phase_tree_auto);

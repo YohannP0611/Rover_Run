@@ -25,6 +25,7 @@ t_node *createNode(t_move move, int nb_sons, int depth);
 
 // Supprimer un noeud (pas encore récursif dans le cas où le neoud a des enfants)
 void deleteNode(p_node node);
+
 // Affichage d'un noeud
 void printNode(t_node node, int indent);
 
@@ -34,6 +35,7 @@ void printPath(t_node node);
 // Fonction pour d'indentation
 void print_indent(int nb);
 
+// Affichage d'un noeud (Méthode 2)
 void printNodeV2(t_node node, int indent);
 
 

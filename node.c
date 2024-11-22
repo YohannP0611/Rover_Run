@@ -145,6 +145,7 @@ void print_indent(int nb) {
     }
 }
 
+// Affichage d'un noeud (Méthode 2)
 void printNodeV2(t_node node, int indent) {
 
     // Si le noeud est la racine
