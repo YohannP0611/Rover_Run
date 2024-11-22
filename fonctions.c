@@ -352,19 +352,25 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
             if (guidage == 'Y') {
 
                 p_tree ptr_phase_tree_auto;
+                
+                p_node node;
 
                 if (methode == 1) {
                     // Création de l'arbre de phase (Méthode 1)
                     ptr_phase_tree_auto = createTree(move_list, map, robot_loc, nbMoveSelect);
+
+                    // Détermination du noeud avec le chemin le moins coûteux
+                    node = searchBetterPathNode(*ptr_phase_tree_auto);
                 }
                 if (methode == 2) {
 
                     // Création de l'arbre de phase (Méthode 1)
                     ptr_phase_tree_auto = createTreeV2(move_list, map, robot_loc, nbMoveSelect);
-                }
+                    printf("ojesoifsges");
 
-                // Détermination du noeud avec le chemin le moins coûteux
-                p_node node = searchBetterPathNode(*ptr_phase_tree_auto);
+                    // Détermination du noeud avec le chemin le moins coûteux
+                    node = printLastNodeTreeV2(*ptr_phase_tree_auto);
+                }
 
 
                 if (node->case_cost > 12999) {
