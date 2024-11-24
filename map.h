@@ -11,7 +11,7 @@
 /**
  * @brief Array of strings for the possible moves of the robot
  */
-static char _soil[5][12] = {"BASE_STATION", "PLAIN", "ERG", "REG", "CREVASSE"};
+static char _soil[6][12] = {"BASE_STATION", "PLAIN", "ERG", "REG", "CREVASSE", "PENTE"};
 
 /**
  *
@@ -26,7 +26,8 @@ typedef enum e_soil
     PLAIN,
     ERG,
     REG,
-    CREVASSE
+    CREVASSE,
+    PENTE
 } t_soil;
 
 typedef struct {
@@ -37,7 +38,7 @@ typedef struct {
 /**
  * @brief Array of costs for the soils
  */
-static const int _soil_cost[5] = {0, 1, 2, 4, 10000};
+static const int _soil_cost[6] = {0, 1, 2, 4, 10000, 500};
 
 /**
  * @brief Structure for the map
@@ -99,5 +100,7 @@ enum e_soil selectRandomSoils(tabSoils soils[], int size);
 int randomNumber(int min, int max);
 
 char *getSoilAsString(t_soil soil);
+
+t_position getNewPositionOnPente( t_localisation loc, t_map map);
 
 #endif //UNTITLED1_MAP_H

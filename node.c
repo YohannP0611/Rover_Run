@@ -33,21 +33,24 @@ t_node *createNode(t_move move, int nb_sons, int depth) {
     return node;
 }
 
-// Supprimer un noeud (pas encore récursif dans le cas où le neoud a des enfants)
+// Supprimer un noeud (récursivement dans le cas où le noeud a des enfants)
 void deleteNode(p_node node) {
-
-    // Si le noeud n'a pas de fils
-    if(node->nbSons == 0) {
-        free(node->sons);
-        free(node);
+    if (node == NULL) {
+        return;
     }
 
-    // Sinon
-    else {
-
-        // Suppression de ses noeuds enfant (pas encore d'appel récursif)
-        deleteNode(node->sons[node->nbSons - 1]);
+    // Suppression récursive de tous les noeuds enfants
+    for (int i = 0; i < node->nbSons; i++) {
+        deleteNode(node->sons[i]);
     }
+
+    // Libération de la mémoire allouée pour les fils, le chemin et le mouvement
+    free(node->sons);
+    free(node->path);
+    free(node->char_move);
+
+    // Libération de la mémoire du noeud lui-même
+    free(node);
 }
 
 // Affichage d'un noeud

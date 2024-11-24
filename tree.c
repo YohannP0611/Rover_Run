@@ -15,11 +15,12 @@ t_tree createEmptyTree() {
     return tree;
 }
 
-// Supprimer un arbre (pas encore terminée)
+// Supprimer un arbre
 void deleteTree(p_tree tree) {
-    if(tree->root != NULL) {
+    if (tree->root != NULL) {
         deleteNode(tree->root);
-        printf("Arbe supprimé\n");
+        free(tree);
+        printf("Arbre supprimé\n");
     }
 }
 

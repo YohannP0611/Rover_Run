@@ -25,7 +25,7 @@ void afficherDebutPhase(int phase, t_map map, t_localisation robot_loc);
 void afficherCarteAvecCouts(t_map map);
 
 // Affiche le résultat de fin de phase
-void AfficherResultats(int success);
+void afficherResultats(int success);
 
 // Affiche la progression d'une tâche
 void afficherProgression(int pourcentage);

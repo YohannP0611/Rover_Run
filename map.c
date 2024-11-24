@@ -286,11 +286,12 @@ void createRandomMap(char *filename, int ydim, int xdim) {
 
     // Exemple de tableau d'éléments avec leurs pourcentages initiaux
     tabSoils item_soils[] = {
-        {PLAIN, 40.0},
+        {PLAIN, 5.0},
         {ERG, 20.0},
         {REG, 30.0},
         {CREVASSE, 5.0},
-        {BASE_STATION, 5.0}
+        {BASE_STATION, 5.0},
+        {PENTE, 30.0}
     };
 
     srand(time(NULL));
@@ -316,7 +317,7 @@ void createRandomMap(char *filename, int ydim, int xdim) {
                 value = 0;
             }
             else {
-                value = selectRandomSoils(item_soils, 5);
+                value = selectRandomSoils(item_soils, 6);
                 if (value == 0) {
                     item_soils[4].percentage = 0.0;
                 }
@@ -373,4 +374,30 @@ int randomNumber(int min, int max) {
 char *getSoilAsString(t_soil soil)
 {
     return _soil[soil];
+}
+
+t_position getNewPositionOnPente(t_localisation loc, t_map map)
+{
+    t_position res;
+    res.x = loc.pos.x;
+    res.y = loc.pos.y;
+    int dir = randomNumber(1,4);
+    switch (dir) {
+
+        case 1:
+            res = RIGHT(res);
+        break;
+        case 2:
+            res = UP(res);
+        break;
+        case 3:
+            res = DOWN(res);
+        break;
+        case 4:
+            res = LEFT(res);
+        break;
+        default:
+            break;
+    }
+    return res;
 }

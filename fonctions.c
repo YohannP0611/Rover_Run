@@ -49,7 +49,7 @@ void afficherInfosRobot(t_localisation robot_loc, t_position base_station_loc) {
 
 // Affiche la liste des mouvements disponibles dans la phase
 void afficherMouvements(h_std_list move_list, int nbMoveSelect) {
-    printf("=====================================\n");
+    printf("======================================\n");
     printf("|    Mouvements disponibles (%d)     |\n", nbMoveSelect);
     printf("=====================================\n");
     printf("| %-10s | %-10s\n", "Numero", "Mouvement\t    |");
@@ -91,7 +91,7 @@ void afficherCarteAvecCouts(t_map map) {
 }
 
 // Affiche le résultat de fin de phase
-void AfficherResultats(int success) {
+void afficherResultats(int success) {
         printf("===============================================\n");
     if (success) {
         printf("              MISSION REUSSIE !\n");
@@ -282,16 +282,22 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
 
     printf("\n\n\n");
 
-    // Définition des données initiales
-    int x_init = 1; //randomNumber(0, map.x_max-1);
-    int y_init = 0; //randomNumber(0, map.y_max-1);
-    t_orientation  orientation_init = randomNumber(0, 3);
-
-    // Définition des coordonnées de base du robot
-    t_localisation robot_loc = loc_init(x_init, y_init, orientation_init);
-
     // Position de la base
     t_position base_station_loc = getBaseStationPosition(map);
+
+    // Définition des données initiales
+    int x_init = randomNumber(0, map.x_max-1);
+    int y_init = randomNumber(0, map.y_max-1);
+    t_orientation  orientation_init = randomNumber(0, 3);
+
+    // Eviter que le robot appaaraisse sur la base ou dans une crevasse
+    while (x_init == base_station_loc.x && y_init == base_station_loc.y || map.soils[y_init][x_init] == CREVASSE) {
+        x_init = randomNumber(0, map.x_max-1);
+        y_init = randomNumber(0, map.y_max-1);
+    }
+
+    // Définition des coordonnées de base du robot;
+    t_localisation robot_loc = loc_init(x_init, y_init, orientation_init);
 
     printf("\n\n\n");
 
@@ -314,194 +320,226 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
 
             _sleep(1000);
 
-            if (map.soils[robot_loc.pos.y][robot_loc.pos.x] == REG && nbMoveSelect > 4) {
-                new_nbMoveSelect = 4;
-            }
+            if (map.soils[robot_loc.pos.y][robot_loc.pos.x] == PENTE) {
+                t_position new_pos = getNewPositionOnPente(robot_loc, map);
+                printf("from case %d %d to case %d %d\n", robot_loc.pos.x, robot_loc.pos.y, new_pos.x, new_pos.y);
 
-            // Afficher les informations du robot
-            afficherInfosRobot(robot_loc, base_station_loc);
-
-            _sleep(1000);
-
-
-            h_std_list *move_list = createListEmpty();
-
-            // Sélectionner n éléments
-            for (int i = 0; i < nbMaxMove; i++) {
-
-                // Choisir un mouvement aléatoire
-                t_move selected = selectRandomMove(items, nbMove);
-
-                // Ajouter l'éléments dans la liste
-                addTailList(move_list, selected);
-            }
-
-            //for(int i = 0; i< 11; i++) {
-            //afficherProgression(i*10);
-            //_sleep(500);
-            //}
-
-            // Affiche les mouvements disponibles
-            afficherMouvements(*move_list, new_nbMoveSelect);
-
-            char guidage = ' ';
-
-            printf("\n\n\n\nActiver le systeme de guidage automatique ? [Y/n] : ");
-            scanf(" %c", &guidage);
-            printf("\n");
-
-            // Saisie sécurisée
-            while (guidage != 'Y' && guidage != 'n') {
-                printf("\nReponse invalide... Activer le systeme de guidage automatique ? [Y/n] : ");
-                scanf(" %c", &guidage);
-                printf("\n");
-            }
-
-            if (guidage == 'Y') {
-
-                p_tree ptr_phase_tree_auto;
-                
-                p_node node;
-
-                if (methode == 1) {
-                    // Création de l'arbre de phase (Méthode 1)
-                    ptr_phase_tree_auto = createTree(move_list, map, robot_loc, new_nbMoveSelect);
-
-                    // Détermination du noeud avec le chemin le moins coûteux
-                    node = searchBetterPathNode(*ptr_phase_tree_auto);
-                }
-                if (methode == 2) {
-
-                    // Création de l'arbre de phase (Méthode 1)
-                    ptr_phase_tree_auto = createTreeV2(move_list, map, robot_loc, new_nbMoveSelect);
-
-                    // Détermination du noeud avec le chemin le moins coûteux
-                    node = printLastNodeTreeV2(*ptr_phase_tree_auto);
-                }
-
-
-                if (node->case_cost > 12999) {
-                    robot_signal = 0;
+                if (isValidLocalisation(new_pos, map.x_max, map.y_max)) {
+                    robot_loc = loc_init(new_pos.x, new_pos.y, robot_loc.ori);
                 } else {
-                    printf("Le chemin le moins couteux est : ");
+                    robot_signal = 0;
+                }
+            }
 
-                    // Affichage du chemin
-                    printPath(*node);
-
-                    printf("\n\n");
-
-                    // Affichage de la suite de mouvement correspondante
-                    printf("Soit la suite de mouvement : [");
-                    for (int i = 0; i < node->depth; i++) {
-                        printf("%s - ", getMoveAsString(node->path[i]));
+            switch (map.soils[robot_loc.pos.y][robot_loc.pos.x]) {
+                case REG:
+                    if (nbMoveSelect > 4) {
+                        new_nbMoveSelect = 4;
                     }
-                    printf("%s]\n\n\n", getMoveAsString(node->path[node->depth]));
+                    break;
 
-                    // Affectation des nouvelles coordonnées pour le robot (coordonnées de la case de fin de phase)
-                    robot_loc = loc_init(node->localisation.pos.x, node->localisation.pos.y, node->localisation.ori);
-                }
+                case CREVASSE:
+                    robot_signal = 0;
+                    break;
 
-                // Augmenter le numéro de phase
-                numero_phase++;
+                default:
+                    break;
+            }
 
-                if (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
-                    printf("----------------------------------------------------------------\n\n\n");
-                    _sleep(1000);
-                }
+            if(robot_signal != 0) {
 
-            } else {
+                // Afficher les informations du robot
+                afficherInfosRobot(robot_loc, base_station_loc);
 
-                // Création de l'arbre de phase manuel
-                t_tree phase_tree_manuel = createEmptyTree();
-
-                // Ajour de la racine de l'arbre
-                addRoot(&phase_tree_manuel, ROOT, 1, move_list, robot_loc, map);
-
-                // Afficher le message de début de phase
-                afficherDebutPhase(numero_phase, map, robot_loc);
-
-                // Temps d'arrêt du programme de 1s
                 _sleep(1000);
 
-                // Déclaration du noeud pour parcourir l'arbre
-                p_node node = phase_tree_manuel.root;
 
-                int rep = 0;
+                h_std_list *move_list = createListEmpty();
 
-                // Tant que le nombre de mouvements à sélectionner n'est pas atteint, que le robot n'est pas hors signal (détruit ou sorti de la carte) et que le robot n'est pas arrivé aux coordonnées de la base
-                while (rep < new_nbMoveSelect && robot_signal == 1 && (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y)) {
+                // Sélectionner n éléments
+                for (int i = 0; i < nbMaxMove; i++) {
 
-                    // Afficher les informations du robot
-                    afficherInfosRobot(robot_loc, base_station_loc);
+                    // Choisir un mouvement aléatoire
+                    t_move selected = selectRandomMove(items, nbMove);
 
-                    _sleep(1000);
+                    // Ajouter l'éléments dans la liste
+                    addTailList(move_list, selected);
+                }
 
-                    // Afficher les mouvements disponibles
-                    afficherMouvements(*move_list, new_nbMoveSelect - rep);
+                //for(int i = 0; i< 11; i++) {
+                //afficherProgression(i*10);
+                //_sleep(500);
+                //}
 
-                    printf("Choisir un mouvement [numero du mouvement dans la liste] :");
+                // Affiche les mouvements disponibles
+                afficherMouvements(*move_list, new_nbMoveSelect);
 
-                    int movement;
-                    scanf(" %d", &movement);
+                char guidage = ' ';
+
+                printf("\n\n\n\nActiver le systeme de guidage automatique ? [Y/n] : ");
+                scanf(" %c", &guidage);
+                printf("\n");
+
+                // Saisie sécurisée
+                while (guidage != 'Y' && guidage != 'n') {
+                    printf("\nReponse invalide... Activer le systeme de guidage automatique ? [Y/n] : ");
+                    scanf(" %c", &guidage);
                     printf("\n");
+                }
 
-                    // Vérification de la présence du mouvement dans la liste des mouvements tirés
-                    while (!(isEltInList(*move_list, movement))) {
-                        printf("Mouvement pas dans la liste... Choisir un autre mouvement :");
-                        scanf(" %d", &movement);
-                        printf("\n");
+                if (guidage == 'Y') {
+
+                    p_tree ptr_phase_tree_auto;
+
+                    p_node node;
+
+                    if (methode == 1) {
+                        // Création de l'arbre de phase (Méthode 1)
+                        ptr_phase_tree_auto = createTree(move_list, map, robot_loc, new_nbMoveSelect);
+
+                        // Détermination du noeud avec le chemin le moins coûteux
+                        node = searchBetterPathNode(*ptr_phase_tree_auto);
+                    }
+                    if (methode == 2) {
+
+                        // Création de l'arbre de phase (Méthode 1)
+                        ptr_phase_tree_auto = createTreeV2(move_list, map, robot_loc, new_nbMoveSelect);
+
+                        // Détermination du noeud avec le chemin le moins coûteux
+                        node = printLastNodeTreeV2(*ptr_phase_tree_auto);
                     }
 
-                    // Ajoute le noeud créé à l'arbre
-                    addNodeV2(&phase_tree_manuel, node, movement, map, new_nbMoveSelect);
 
-                    // Supprime le mouvement utilisé de la liste
-                    move_list = removeElt(*move_list, movement);
-
-                    // Passe au noeud suivant
-                    node = node->sons[node->nbSons - 1];
-
-                    if (node->case_cost > 10000) {
-
-                        // Mettre le signal du robot à 0 pour indiquer une perte de signal de celui-ci
+                    if (node->case_cost > 12999) {
                         robot_signal = 0;
-
-                    }
-                    else {
-                        printf("Chemin suivi : ");
+                    } else {
+                        printf("Le chemin le moins couteux est : ");
 
                         // Affichage du chemin
                         printPath(*node);
 
+                        printf("\n\n");
+
                         // Affichage de la suite de mouvement correspondante
-                        printf("\n\nSoit la suite de mouvement : [");
+                        printf("Soit la suite de mouvement : [");
                         for (int i = 0; i < node->depth; i++) {
                             printf("%s - ", getMoveAsString(node->path[i]));
                         }
                         printf("%s]\n\n\n", getMoveAsString(node->path[node->depth]));
 
-                        printf("\n\n");
-
                         // Affectation des nouvelles coordonnées pour le robot (coordonnées de la case de fin de phase)
                         robot_loc = loc_init(node->localisation.pos.x, node->localisation.pos.y, node->localisation.ori);
                     }
 
-                    // Augmenter le nombre de mouvements éxecuté
-                    rep++;
+                    // Augmenter le numéro de phase
+                    numero_phase++;
 
+                    if (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
+                        printf("----------------------------------------------------------------\n\n\n");
+                        _sleep(1000);
+                    }
+
+                } else {
+
+                    // Création de l'arbre de phase manuel
+                    t_tree phase_tree_manuel = createEmptyTree();
+
+                    // Ajour de la racine de l'arbre
+                    addRoot(&phase_tree_manuel, ROOT, 1, move_list, robot_loc, map);
+
+                    // Afficher le message de début de phase
+                    afficherDebutPhase(numero_phase, map, robot_loc);
+
+                    // Temps d'arrêt du programme de 1s
+                    _sleep(1000);
+
+                    // Déclaration du noeud pour parcourir l'arbre
+                    p_node node = phase_tree_manuel.root;
+
+                    int rep = 0;
+
+                    // Tant que le nombre de mouvements à sélectionner n'est pas atteint, que le robot n'est pas hors signal (détruit ou sorti de la carte) et que le robot n'est pas arrivé aux coordonnées de la base
+                    while (rep < new_nbMoveSelect && robot_signal == 1 && (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y)) {
+
+                        // Afficher les informations du robot
+                        afficherInfosRobot(robot_loc, base_station_loc);
+
+                        _sleep(1000);
+
+                        // Afficher les mouvements disponibles
+                        afficherMouvements(*move_list, new_nbMoveSelect - rep);
+
+                        printf("Choisir un mouvement [numero du mouvement dans la liste] :");
+
+                        int movement;
+                        scanf(" %d", &movement);
+                        printf("\n");
+
+                        // Vérification de la présence du mouvement dans la liste des mouvements tirés
+                        while (!(isEltInList(*move_list, movement))) {
+                            printf("Mouvement pas dans la liste... Choisir un autre mouvement :");
+                            scanf(" %d", &movement);
+                            printf("\n");
+                        }
+
+                        printf("Oho");
+                        // Ajoute le noeud créé à l'arbre
+                        addNodeV2(&phase_tree_manuel, node, movement, map, new_nbMoveSelect);
+                        printf("hihi");
+
+                        // Supprime le mouvement utilisé de la liste
+                        move_list = removeElt(*move_list, movement);
+
+                        // Passe au noeud suivant
+                        node = node->sons[node->nbSons - 1];
+
+                        if (node->case_cost > 10000) {
+
+                            // Mettre le signal du robot à 0 pour indiquer une perte de signal de celui-ci
+                            robot_signal = 0;
+
+                        }
+                        else {
+                            printf("Chemin suivi : ");
+
+                            // Affichage du chemin
+                            printPath(*node);
+
+                            // Affichage de la suite de mouvement correspondante
+                            printf("\n\nSoit la suite de mouvement : [");
+                            for (int i = 0; i < node->depth; i++) {
+                                printf("%s - ", getMoveAsString(node->path[i]));
+                            }
+                            printf("%s]\n\n\n", getMoveAsString(node->path[node->depth]));
+
+                            printf("\n\n");
+
+                            // Affectation des nouvelles coordonnées pour le robot (coordonnées de la case de fin de phase)
+                            robot_loc = loc_init(node->localisation.pos.x, node->localisation.pos.y, node->localisation.ori);
+                        }
+
+                        // Augmenter le nombre de mouvements éxecuté
+                        rep++;
+
+
+
+                    }
+
+                    // Augmenter le numéro de phase
+                    numero_phase++;
                 }
 
-                // Augmenter le numéro de phase
-                numero_phase++;
-            }
+                if (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
+                    printf("----------------------------------------------------------------\n\n\n");
 
-            if (robot_loc.pos.x != base_station_loc.x || robot_loc.pos.y != base_station_loc.y) {
-                printf("----------------------------------------------------------------\n\n\n");
-            }
+                    displayMap(map);
 
+                    printf("\n\n\n");
+                }
+            }
         }
 
-        AfficherResultats(robot_signal);
+        afficherResultats(robot_signal);
 
         displayMap(map);
 

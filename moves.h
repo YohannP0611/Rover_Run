@@ -33,8 +33,6 @@ typedef struct {
     double percentage;  // Le pourcentage de probabilité de l'élément
 } tabMove;
 
-
-
 /**
  * @brief function to get a t_move as a string
  * @param move : the move to convert
@@ -76,5 +74,7 @@ t_orientation rotate(t_orientation, t_move );
  * @return the new localisation of the robot
  */
 t_localisation translate(t_localisation loc, t_move move);
+
+t_move* getRandomMoves(int N);
 
 #endif //UNTITLED1_MOVES_H
