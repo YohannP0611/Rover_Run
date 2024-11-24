@@ -24,34 +24,28 @@ void deleteTree(p_tree tree) {
     }
 }
 
-// Fonction qui retourne l'adresse d'un noeud à partir de son chemin et sa profondeur (pas encore terminée)
+// Fonction qui retourne l'adresse d'un noeud à partir de son chemin et sa profondeur
 p_node findNode(t_tree tree, p_move path, int depth) {
-
     p_node tmp = tree.root;
 
-    if (tmp->sons == NULL) {
-        return tmp;
+    if (tmp == NULL) {
+        return NULL;
     }
 
-    int j = 0;
-    while(j < depth) {
-
-            int i = 0;
-
-            while (i < tmp->nbSons) {
-
-                if (tmp->sons[i] != NULL) {
-
-                    if (tmp->path[j] == tmp->sons[i]->move) {
-                        tmp = tmp->sons[i];
-
-                    }
-                }
-
-                i++;
+    for (int j = 1; j < depth; j++) {
+        int found = 0;
+        for (int i = 0; i < tmp->nbSons; i++) {
+            if (tmp->sons[i] != NULL && tmp->sons[i]->move == path[j]) {
+                tmp = tmp->sons[i];
+                found = 1;
+                break;
             }
-            j++;
+        }
+        if (!found) {
+            return NULL;
+        }
     }
+
     return tmp;
 }
 
@@ -404,6 +398,7 @@ p_node searchBetterNode(p_node node) {
 }
 
 p_tree createTreeV2(h_std_list* phase_move, t_map map, t_localisation loc, int max_depth) {
+
     // Création de l'arbre vide
     p_tree tree = (p_tree) malloc(sizeof(t_tree));
     if (tree == NULL) {

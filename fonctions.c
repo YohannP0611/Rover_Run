@@ -409,7 +409,6 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
                         node = printLastNodeTreeV2(*ptr_phase_tree_auto);
                     }
 
-
                     if (node->case_cost > 12999) {
                         robot_signal = 0;
                     } else {
