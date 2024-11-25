@@ -1,4 +1,4 @@
 [] Améliorer les fonctions d'affichage pour le jeu (options, affichage des phases, ...)
-[] Ajouter de nouvelles cases (ex : case qui change l'orientation aléatoirement)
-[] Ajouter les temps de complexités
-[] Réadapter les fonctions de création de cartes (changer les pourcentages)
+[/] Ajouter de nouvelles cases (ex : case qui change l'orientation aléatoirement)
+[/] Ajouter les temps de complexités
+[/] Réadapter les fonctions de création de cartes (changer les pourcentages)

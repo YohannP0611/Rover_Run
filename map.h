@@ -11,7 +11,7 @@
 /**
  * @brief Array of strings for the possible moves of the robot
  */
-static char _soil[6][12] = {"BASE_STATION", "PLAIN", "ERG", "REG", "CREVASSE", "PENTE"};
+static char _soil[8][13] = {"BASE_STATION", "PLAIN", "ERG", "REG", "CREVASSE", "PENTE", "ZONE_MORTE", "ZONE_SOLAIRE"};
 
 /**
  *
@@ -27,7 +27,9 @@ typedef enum e_soil
     ERG,
     REG,
     CREVASSE,
-    PENTE
+    PENTE,
+    ZONE_MORTE,
+    ZONE_SOLAIRE
 } t_soil;
 
 typedef struct {
@@ -38,7 +40,7 @@ typedef struct {
 /**
  * @brief Array of costs for the soils
  */
-static const int _soil_cost[6] = {0, 1, 2, 4, 10000, 500};
+static const int _soil_cost[8] = {0, 2, 4, 5, 10000, 10, 6, 1};
 
 /**
  * @brief Structure for the map
