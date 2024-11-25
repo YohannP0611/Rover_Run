@@ -49,7 +49,7 @@ void afficherInfosRobot(t_localisation robot_loc, t_position base_station_loc) {
 
 // Affiche la liste des mouvements disponibles dans la phase
 void afficherMouvements(h_std_list move_list, int nbMoveSelect) {
-    printf("======================================\n");
+    printf("=====================================\n");
     printf("|    Mouvements disponibles (%d)     |\n", nbMoveSelect);
     printf("=====================================\n");
     printf("| %-10s | %-10s\n", "Numero", "Mouvement\t    |");
@@ -322,7 +322,7 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
 
             if (map.soils[robot_loc.pos.y][robot_loc.pos.x] == PENTE) {
                 t_position new_pos = getNewPositionOnPente(robot_loc, map);
-                printf("from case %d %d to case %d %d\n", robot_loc.pos.x, robot_loc.pos.y, new_pos.x, new_pos.y);
+                printf("from case %d %d to case %d %d\n\n", robot_loc.pos.x, robot_loc.pos.y, new_pos.x, new_pos.y);
 
                 if (isValidLocalisation(new_pos, map.x_max, map.y_max)) {
                     robot_loc = loc_init(new_pos.x, new_pos.y, robot_loc.ori);
@@ -341,6 +341,17 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
                 case CREVASSE:
                     robot_signal = 0;
                     break;
+
+                case ZONE_MORTE:
+                    robot_loc = loc_init(robot_loc.pos.x, robot_loc.pos.y, rotate(robot_loc.ori, randomNumber(4,6)));
+                    printf("new orientation : %s\n\n", getOrientationAsString(robot_loc.ori));
+                    break;
+
+                case ZONE_SOLAIRE:
+                    new_nbMoveSelect = nbMoveSelect + 1;
+                    printf("Ajout d'un mouvement\n\n");
+
+                break;
 
                 default:
                     break;
@@ -481,10 +492,8 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
                             printf("\n");
                         }
 
-                        printf("Oho");
                         // Ajoute le noeud créé à l'arbre
                         addNodeV2(&phase_tree_manuel, node, movement, map, new_nbMoveSelect);
-                        printf("hihi");
 
                         // Supprime le mouvement utilisé de la liste
                         move_list = removeElt(*move_list, movement);
@@ -555,7 +564,8 @@ void options(int* nbMaxMove, int* nbMoveSelect, t_map* map, int* methode) {
     printf("1 - Modifier la carte.\n");
     printf("2 - Changer la selection des mouvements.\n");
     printf("3 - Changer la methode de construction de l'arbre (Actuellement : Methode %d).\n", *methode);
-    printf("4 - Retablir les parametres par defaut.\n\n");
+    printf("4 - Afficher la carte\n");
+    printf("5 - Retablir les parametres par defaut.\n\n");
     printf("Entrez votre choix : ");
     scanf("%d", &choix);
     printf("\n");
@@ -576,10 +586,20 @@ void options(int* nbMaxMove, int* nbMoveSelect, t_map* map, int* methode) {
             while (*methode != 1 && *methode != 2);
             break;
 
-        case 4: *nbMaxMove = 9;
+        case 5: *nbMaxMove = 9;
             *nbMoveSelect = 5;
             *map = createMapFromFile("..\\maps\\example1.map");
             *methode = 1;
+            break;
+
+        case 4:
+            printf("=========================\n");
+            printf("| Affichage de la carte |\n");
+            printf("=========================\n\n");
+            displayMap(*map);
+            printf("\n\n\n");
+            afficherCarteAvecCouts(*map);
+            _sleep(3000);
             break;
 
         default:

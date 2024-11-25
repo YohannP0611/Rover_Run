@@ -25,7 +25,7 @@ int main() {
 #if defined(_WIN32) || defined(_WIN64)
     map = createMapFromFile("..\\maps\\example1.map");
 #else
-    map = createMapFromFile("../maps/example1.map");3 1
+    map = createMapFromFile("../maps/example1.map");
 #endif
 
     printf("Map created with dimensions %d x %d\n", map.y_max, map.x_max);

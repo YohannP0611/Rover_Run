@@ -269,6 +269,15 @@ void displayMap(t_map map)
                     case CREVASSE:
                         sprintf(c, "%c%c%c",219,219,219);
                         break;
+                    case PENTE:
+                        strcpy(c, "///");
+                        break;
+                    case ZONE_MORTE:
+                        strcpy(c, "|||");
+                        break;
+                    case ZONE_SOLAIRE:
+                        sprintf(c, "***",219,219,219);
+                        break;
                     default:
                         strcpy(c, "???");
                         break;
@@ -286,12 +295,14 @@ void createRandomMap(char *filename, int ydim, int xdim) {
 
     // Exemple de tableau d'éléments avec leurs pourcentages initiaux
     tabSoils item_soils[] = {
-        {PLAIN, 5.0},
+        {PLAIN, 25.0},
         {ERG, 20.0},
-        {REG, 30.0},
+        {REG, 20.0},
         {CREVASSE, 5.0},
         {BASE_STATION, 5.0},
-        {PENTE, 30.0}
+        {PENTE, 10.0},
+        {ZONE_MORTE, 10.0},
+        {ZONE_SOLAIRE, 5.0}
     };
 
     srand(time(NULL));
@@ -317,7 +328,7 @@ void createRandomMap(char *filename, int ydim, int xdim) {
                 value = 0;
             }
             else {
-                value = selectRandomSoils(item_soils, 6);
+                value = selectRandomSoils(item_soils, 8);
                 if (value == 0) {
                     item_soils[4].percentage = 0.0;
                 }
@@ -401,3 +412,4 @@ t_position getNewPositionOnPente(t_localisation loc, t_map map)
     }
     return res;
 }
+
