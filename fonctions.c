@@ -482,10 +482,8 @@ void jouer(t_map map, int nbMaxMove, int nbMoveSelect, int methode) {
                             printf("\n");
                         }
 
-                        printf("Oho");
                         // Ajoute le noeud créé à l'arbre
                         addNodeV2(&phase_tree_manuel, node, movement, map, new_nbMoveSelect);
-                        printf("hihi");
 
                         // Supprime le mouvement utilisé de la liste
                         move_list = removeElt(*move_list, movement);
